@@ -1,108 +1,135 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Users,
+  Briefcase,
+  PlusCircle,
+  Search,
+  TrendingUp,
+  Filter,
+  MoreVertical
+} from "lucide-react";
 import JobForm from "../components/recruiter/JobForm";
 import CandidateList from "../components/recruiter/CandidateList";
 import useAuth from "../hooks/useAuth";
+import { Card } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 
 export default function RecruiterDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("candidates");
 
+  const tabs = [
+    { id: "candidates", label: "Talent Pool", icon: Users },
+    { id: "post-job", label: "Post New Job", icon: PlusCircle },
+  ];
+
+  const stats = [
+    { label: "Active Candidates", value: "42", icon: Users, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { label: "Open Roles", value: "8", icon: Briefcase, color: "text-brand-violet", bg: "bg-brand-violet/10" },
+    { label: "Interviews Today", value: "5", icon: TrendingUp, color: "text-emerald-500", bg: "bg-emerald-500/10" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50">
-      {/* Hero Section with Animated Background */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 shadow-2xl">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-rose-300 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 relative z-10">
-          <div className="flex items-center justify-between">
-            <div className="animate-fade-in">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/30 animate-float">
-                  <svg className="w-14 h-14 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div className="space-y-4">
-                  <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight">
-                    Welcome, {user?.name || user?.email?.split('@')[0] || 'Recruiter'}! 🚀
-                  </h1>
-                  <p className="text-pink-100 text-xl font-medium opacity-90">
-                    Find and manage top talent for your organization
-                  </p>
-                </div>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="flex flex-wrap items-center gap-8 mt-12">
-                <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-md px-8 py-4 rounded-[1.25rem] border border-white/20 shadow-xl hover:bg-white/20 transition-all cursor-default">
-                  <div className="bg-green-400/20 p-2.5 rounded-xl">
-                    <svg className="w-7 h-7 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-bold text-xl">4 Active Candidates</span>
-                </div>
-                <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-md px-8 py-4 rounded-[1.25rem] border border-white/20 shadow-xl hover:bg-white/20 transition-all cursor-default">
-                  <div className="bg-blue-400/20 p-2.5 rounded-xl">
-                    <svg className="w-7 h-7 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-bold text-xl">3 Job Openings</span>
-                </div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-brand-black pt-28 pb-12 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2 text-brand-cyan font-medium mb-2"
+            >
+              <Briefcase className="w-4 h-4" />
+              <span>Recruiter Workspace</span>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl font-bold text-white mb-2"
+            >
+              Find the Next <span className="gradient-text">Elite Team</span>
+            </motion.h1>
+            <p className="text-slate-400">Welcome, {user?.name || 'Partner'}. Monitor your talent pipeline and active listings.</p>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-4 mb-12 animate-slide-in-left">
-          <button
-            onClick={() => setActiveTab("candidates")}
-            className={`group flex items-center space-x-4 px-10 py-5 rounded-[1.5rem] font-bold transition-all duration-300 ${activeTab === "candidates"
-              ? "bg-white text-purple-600 shadow-2xl scale-105 border-2 border-purple-100"
-              : "bg-white/40 text-gray-500 hover:bg-white hover:text-purple-600 hover:shadow-xl hover:scale-102 border-2 border-transparent"
-              }`}
-          >
-            <svg className={`w-7 h-7 ${activeTab === "candidates" ? "text-purple-600" : "text-gray-400 group-hover:text-purple-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <span className="text-lg">Candidates</span>
-            {activeTab === "candidates" && (
-              <div className="flex items-center space-x-2">
-                <div className="w-2.5 h-2.5 bg-purple-600 rounded-full animate-pulse shadow-[0_0_10px_rgba(147,51,234,0.5)]"></div>
-                <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm font-bold">4</span>
-              </div>
-            )}
-          </button>
+          <div className="flex flex-wrap gap-4">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="glass px-6 py-4 rounded-2xl flex items-center gap-4 min-w-[180px]"
+              >
+                <div className={`w-10 h-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center`}>
+                  <stat.icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 uppercase font-medium">{stat.label}</div>
+                  <div className="text-xl font-bold text-white">{stat.value}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </header>
 
-          <button
-            onClick={() => setActiveTab("post-job")}
-            className={`group flex items-center space-x-4 px-10 py-5 rounded-[1.5rem] font-bold transition-all duration-300 ${activeTab === "post-job"
-              ? "bg-white text-purple-600 shadow-2xl scale-105 border-2 border-purple-100"
-              : "bg-white/40 text-gray-500 hover:bg-white hover:text-purple-600 hover:shadow-xl hover:scale-102 border-2 border-transparent"
-              }`}
-          >
-            <svg className={`w-7 h-7 ${activeTab === "post-job" ? "text-purple-600" : "text-gray-400 group-hover:text-purple-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            <span className="text-lg">Post New Job</span>
-            {activeTab === "post-job" && (
-              <div className="w-2.5 h-2.5 bg-purple-600 rounded-full animate-pulse shadow-[0_0_10px_rgba(147,51,234,0.5)]"></div>
-            )}
-          </button>
+        {/* Dashboard Actions Bar */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+          <div className="flex bg-white/5 p-1 rounded-2xl w-fit border border-white/5">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 relative ${activeTab === tab.id ? "text-white" : "text-slate-400 hover:text-white"
+                  }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="recruiterTab"
+                    className="absolute inset-0 bg-brand-violet/20 border border-brand-violet/30 rounded-xl -z-10"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Search candidates..."
+                className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-violet/50"
+              />
+            </div>
+            <Button variant="secondary" className="p-2.5 rounded-xl">
+              <Filter className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Content Area */}
-        <div className="animate-fade-in">
-          {activeTab === "candidates" ? <CandidateList /> : <JobForm />}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === "candidates" ? (
+              <CandidateList />
+            ) : (
+              <div className="max-w-2xl mx-auto">
+                <JobForm />
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

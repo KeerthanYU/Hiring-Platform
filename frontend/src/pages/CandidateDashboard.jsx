@@ -1,105 +1,144 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Trophy,
+  Target,
+  FileText,
+  Sparkles,
+  ArrowRight,
+  ChevronRight,
+  Activity,
+  Briefcase
+} from "lucide-react";
 import SkillTest from "../components/candidate/SkillTest";
 import ReportCard from "../components/candidate/ReportCard";
+import JobListings from "../components/candidate/JobListings";
 import useAuth from "../hooks/useAuth";
+import { Card } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 
 export default function CandidateDashboard() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("test");
+  const [activeTab, setActiveTab] = useState("jobs");
+
+  const tabs = [
+    { id: "jobs", label: "Open Roles", icon: Briefcase },
+    { id: "test", label: "Assessment", icon: Target },
+    { id: "report", label: "Performance", icon: Activity },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Hero Section with Animated Background */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-2xl">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
-        </div>
+    <div className="min-h-screen bg-brand-black pt-28 pb-12 px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2 text-brand-violet font-medium mb-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Candidate Portal</span>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl font-bold text-white mb-2"
+            >
+              Master Your <span className="gradient-text">Future</span>
+            </motion.h1>
+            <p className="text-slate-400">Welcome back, {user?.name || 'Explorer'}. Ready for your next challenge?</p>
+          </div>
 
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 relative z-10">
-          <div className="flex items-center justify-between">
-            <div className="animate-fade-in">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/30 animate-float">
-                  <svg className="w-14 h-14 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <div className="space-y-4">
-                  <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight">
-                    Welcome back, {user?.name || user?.email?.split('@')[0] || 'Candidate'}! 👋
-                  </h1>
-                  <p className="text-blue-100 text-xl font-medium opacity-90">
-                    Ready to showcase your skills and advance your career?
-                  </p>
-                </div>
+          <div className="flex gap-4">
+            <div className="glass px-6 py-3 rounded-2xl flex items-center gap-4">
+              <div className="w-10 h-10 bg-green-500/10 rounded-full flex items-center justify-center text-green-500">
+                <Trophy className="w-5 h-5" />
               </div>
-
-              {/* Quick Stats */}
-              <div className="flex flex-wrap items-center gap-8 mt-12">
-                <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-md px-8 py-4 rounded-[1.25rem] border border-white/20 shadow-xl hover:bg-white/20 transition-all cursor-default">
-                  <div className="bg-green-400/20 p-2.5 rounded-xl">
-                    <svg className="w-7 h-7 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-bold text-xl">5 Tests Completed</span>
-                </div>
-                <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-md px-8 py-4 rounded-[1.25rem] border border-white/20 shadow-xl hover:bg-white/20 transition-all cursor-default">
-                  <div className="bg-yellow-400/20 p-2.5 rounded-xl">
-                    <svg className="w-7 h-7 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-bold text-xl">85% Avg Score</span>
-                </div>
+              <div>
+                <div className="text-xs text-slate-500 uppercase">Avg. Score</div>
+                <div className="text-lg font-bold text-white">85%</div>
+              </div>
+            </div>
+            <div className="glass px-6 py-3 rounded-2xl flex items-center gap-4">
+              <div className="w-10 h-10 bg-brand-violet/10 rounded-full flex items-center justify-center text-brand-violet">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs text-slate-500 uppercase">Tests</div>
+                <div className="text-lg font-bold text-white">12</div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </header>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
         {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-4 mb-12 animate-slide-in-left">
-          <button
-            onClick={() => setActiveTab("test")}
-            className={`group flex items-center space-x-4 px-10 py-5 rounded-[1.5rem] font-bold transition-all duration-300 ${activeTab === "test"
-              ? "bg-white text-indigo-600 shadow-2xl scale-105 border-2 border-indigo-100"
-              : "bg-white/40 text-gray-500 hover:bg-white hover:text-indigo-600 hover:shadow-xl hover:scale-102 border-2 border-transparent"
-              }`}
-          >
-            <svg className={`w-7 h-7 ${activeTab === "test" ? "text-indigo-600" : "text-gray-400 group-hover:text-indigo-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span className="text-lg">Take Assessment</span>
-            {activeTab === "test" && (
-              <div className="w-2.5 h-2.5 bg-indigo-600 rounded-full animate-pulse shadow-[0_0_10px_rgba(79,70,229,0.5)]"></div>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab("report")}
-            className={`group flex items-center space-x-4 px-10 py-5 rounded-[1.5rem] font-bold transition-all duration-300 ${activeTab === "report"
-              ? "bg-white text-indigo-600 shadow-2xl scale-105 border-2 border-indigo-100"
-              : "bg-white/40 text-gray-500 hover:bg-white hover:text-indigo-600 hover:shadow-xl hover:scale-102 border-2 border-transparent"
-              }`}
-          >
-            <svg className={`w-7 h-7 ${activeTab === "report" ? "text-indigo-600" : "text-gray-400 group-hover:text-indigo-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <span className="text-lg">Performance Reports</span>
-            {activeTab === "report" && (
-              <div className="w-2.5 h-2.5 bg-indigo-600 rounded-full animate-pulse shadow-[0_0_10px_rgba(79,70,229,0.5)]"></div>
-            )}
-          </button>
+        <div className="flex bg-white/5 p-1 rounded-2xl mb-8 w-fit border border-white/5">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 relative ${activeTab === tab.id ? "text-white" : "text-slate-400 hover:text-white"
+                }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-brand-violet/20 border border-brand-violet/30 rounded-xl -z-10"
+                />
+              )}
+            </button>
+          ))}
         </div>
 
         {/* Content Area */}
-        <div className="animate-fade-in">
-          {activeTab === "test" ? <SkillTest /> : <ReportCard />}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === "test" ? (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2">
+                  <SkillTest />
+                </div>
+                <div className="space-y-6">
+                  <Card className="p-6">
+                    <h3 className="text-lg font-semibold mb-4 text-white">Upcoming Deadlines</h3>
+                    <div className="space-y-4">
+                      {[1, 2].map(i => (
+                        <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 group hover:border-white/10 transition-colors">
+                          <div>
+                            <div className="text-sm font-medium text-white">Advanced React Hooks</div>
+                            <div className="text-xs text-slate-500">Due in 2 days</div>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-brand-violet transition-colors" />
+                        </div>
+                      ))}
+                    </div>
+                    <Button variant="ghost" className="w-full mt-4 text-xs">View All Tasks</Button>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-brand-violet/20 to-transparent border-brand-violet/20">
+                    <h3 className="text-lg font-semibold mb-2 text-white">AI Career Path</h3>
+                    <p className="text-sm text-slate-400 mb-6">Based on your HTML/CSS scores, you're ready for Advanced UI Design.</p>
+                    <Button className="w-full bg-white text-brand-black hover:bg-slate-100">Unlock Mastery</Button>
+                  </Card>
+                </div>
+              </div>
+            ) : activeTab === "report" ? (
+              <ReportCard />
+            ) : (
+              <JobListings />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
