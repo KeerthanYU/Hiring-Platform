@@ -66,26 +66,26 @@ export default function Register() {
         <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-violet-300/20 to-fuchsia-300/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <div className="max-w-md w-full space-y-8 relative z-10 animate-fade-in">
+      <div className="max-w-lg w-full space-y-12 relative z-10 animate-fade-in py-12">
         {/* Logo and Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
+        <div className="text-center space-y-4">
+          <div className="flex justify-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl hover-glow animate-float">
               <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
             </div>
           </div>
-          <h2 className="text-4xl font-bold gradient-text mb-3">
+          <h2 className="text-5xl font-bold gradient-text mb-4 tracking-tight">
             Create Account
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-xl font-medium">
             Join thousands of professionals
           </p>
         </div>
 
         {/* Register Card */}
-        <div className="glass rounded-3xl p-8 shadow-2xl border-2 border-white/50">
+        <div className="glass rounded-[2.5rem] p-10 md:p-12 shadow-2xl border-2 border-white/50 hover:shadow-pink-500/10 transition-shadow duration-500">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg flex items-center animate-scale-in">
               <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -95,15 +95,15 @@ export default function Register() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div className="group">
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-2 ml-1 tracking-wide uppercase">
                 Full Name
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -114,7 +114,7 @@ export default function Register() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-100 focus:border-pink-600 transition-all outline-none bg-white/80"
+                  className="block w-full pl-14 pr-6 py-4 border-2 border-gray-100 rounded-2xl focus:ring-8 focus:ring-pink-500/10 focus:border-pink-600 transition-all outline-none bg-white/90 text-lg shadow-sm"
                   placeholder="John Doe"
                 />
               </div>
@@ -122,12 +122,12 @@ export default function Register() {
 
             {/* Email Field */}
             <div className="group">
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2 ml-1 tracking-wide uppercase">
                 Email Address
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                   </svg>
                 </div>
@@ -138,7 +138,7 @@ export default function Register() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-100 focus:border-pink-600 transition-all outline-none bg-white/80"
+                  className="block w-full pl-14 pr-6 py-4 border-2 border-gray-100 rounded-2xl focus:ring-8 focus:ring-pink-500/10 focus:border-pink-600 transition-all outline-none bg-white/90 text-lg shadow-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -146,12 +146,12 @@ export default function Register() {
 
             {/* Password Field */}
             <div className="group">
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2 ml-1 tracking-wide uppercase">
                 Password
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
@@ -162,7 +162,7 @@ export default function Register() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-100 focus:border-pink-600 transition-all outline-none bg-white/80"
+                  className="block w-full pl-14 pr-6 py-4 border-2 border-gray-100 rounded-2xl focus:ring-8 focus:ring-pink-500/10 focus:border-pink-600 transition-all outline-none bg-white/90 text-lg shadow-sm"
                   placeholder="Min. 6 characters"
                 />
               </div>
@@ -170,12 +170,12 @@ export default function Register() {
 
             {/* Confirm Password Field */}
             <div className="group">
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-700 mb-2 ml-1 tracking-wide uppercase">
                 Confirm Password
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -186,7 +186,7 @@ export default function Register() {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-100 focus:border-pink-600 transition-all outline-none bg-white/80"
+                  className="block w-full pl-14 pr-6 py-4 border-2 border-gray-100 rounded-2xl focus:ring-8 focus:ring-pink-500/10 focus:border-pink-600 transition-all outline-none bg-white/90 text-lg shadow-sm"
                   placeholder="Re-enter password"
                 />
               </div>
@@ -194,12 +194,12 @@ export default function Register() {
 
             {/* Role Selection */}
             <div className="group">
-              <label htmlFor="role" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="role" className="block text-sm font-bold text-gray-700 mb-2 ml-1 tracking-wide uppercase">
                 I am a
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="relative group-focus-within:scale-[1.01] transition-transform duration-300">
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400 group-focus-within:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
@@ -208,13 +208,13 @@ export default function Register() {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-100 focus:border-pink-600 transition-all outline-none bg-white/80 appearance-none cursor-pointer"
+                  className="block w-full pl-14 pr-12 py-4 border-2 border-gray-100 rounded-2xl focus:ring-8 focus:ring-pink-500/10 focus:border-pink-600 transition-all outline-none bg-white/90 appearance-none cursor-pointer text-lg shadow-sm"
                 >
                   <option value="candidate">Candidate</option>
                   <option value="recruiter">Recruiter</option>
                 </select>
-                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="absolute inset-y-0 right-0 pr-5 flex items-center pointer-events-none">
+                  <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -225,7 +225,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-4 px-6 border border-transparent text-base font-bold rounded-xl text-white bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-pink-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 mt-6"
+              className="group relative w-full flex justify-center py-5 px-8 border border-transparent text-xl font-bold rounded-2xl text-white bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 focus:outline-none focus:ring-8 focus:ring-pink-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-xl shadow-pink-200 hover:shadow-2xl hover:shadow-pink-300 hover:-translate-y-1 mt-6"
             >
               {loading ? (
                 <span className="flex items-center">
@@ -247,26 +247,26 @@ export default function Register() {
           </form>
 
           {/* Divider */}
-          <div className="mt-6">
+          <div className="mt-10">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t-2 border-gray-100"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white/80 text-gray-600 font-medium">Already have an account?</span>
+                <span className="px-6 bg-white/90 text-gray-500 font-bold uppercase tracking-widest text-xs">Already have an account?</span>
               </div>
             </div>
           </div>
 
           {/* Login Link */}
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               to="/"
-              className="inline-flex items-center text-pink-600 hover:text-pink-800 font-semibold transition-colors group"
+              className="inline-flex items-center px-8 py-3 rounded-xl bg-pink-50 text-pink-700 hover:bg-pink-100 font-bold transition-all group shadow-sm hover:shadow-md"
             >
               Sign in instead
-              <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg className="ml-3 w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
               </svg>
             </Link>
           </div>
