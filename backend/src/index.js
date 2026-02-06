@@ -15,8 +15,13 @@ import Application from './models/Application.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+
+// Middleware
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+app.use(express.json()); // Essential for parsing POST bodies
 
 // Routes
 app.get("/", (req, res) => {
@@ -33,10 +38,11 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/users', userRoutes);
 
 // Sync database and start server
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5002;
 sequelize.sync({ alter: true }).then(() => {
     console.log('✅ Database synced');
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 }).catch(err => {
     console.error('❌ Database sync failed:', err);
 });
+
