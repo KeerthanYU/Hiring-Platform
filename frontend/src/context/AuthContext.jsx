@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
-const API_BASE = "http://localhost:5002/api"; // backend URL Port 5002
+const API_BASE = "http://localhost:5002/api";
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
