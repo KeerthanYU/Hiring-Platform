@@ -1,20 +1,13 @@
 import { cn } from "../../utils/cn";
 
-export const Input = ({ icon: Icon, className, ...props }) => {
+export const Input = ({ className, ...props }) => {
     return (
-        <div className="relative group/input">
-            {Icon && (
-                <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within/input:text-brand-violet transition-colors" />
+        <input
+            className={cn(
+                "w-full px-4 py-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] text-[var(--color-text-primary)] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-brand-violet placeholder:text-[var(--color-text-secondary)]/50",
+                className
             )}
-            <input
-                className={cn(
-                    "w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-white placeholder:text-slate-600",
-                    "focus:outline-none focus:ring-2 focus:ring-brand-violet/50 focus:border-brand-violet/50 transition-all",
-                    Icon && "pl-10",
-                    className
-                )}
-                {...props}
-            />
-        </div>
+            {...props}
+        />
     );
 };

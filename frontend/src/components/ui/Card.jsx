@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 
-export const Card = ({ children, className, ...props }) => {
+export const Card = ({ children, className, hover = true, ...props }) => {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className={cn("glass-card", className)}
+            whileHover={hover ? { y: -5 } : {}}
+            className={cn(
+                "glass-card bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-2xl p-6 shadow-sm",
+                className
+            )}
             {...props}
         >
             {children}

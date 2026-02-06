@@ -1,10 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-black: #030303;
-  --color-brand-gray: #111111;
   --color-brand-violet: #8B5CF6;
   --color-brand-cyan: #06B6D4;
+
+  /* Theme Variables */
+  --bg-primary: var(--color-bg-primary);
+  --bg-secondary: var(--color-bg-secondary);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --accent-primary: var(--color-brand-violet);
+  --accent-secondary: var(--color-brand-cyan);
+  --border-primary: var(--color-border-primary);
 
   --animate-shimmer: shimmer 2s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -34,29 +41,52 @@
 }
 
 @layer base {
+
   :root {
+    --color-bg-primary: #F9FAFB;
+    --color-bg-secondary: #FFFFFF;
+    --color-text-primary: #111827;
+    --color-text-secondary: #4B5563;
+    --color-border-primary: #E5E7EB;
+    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+    color-scheme: light;
+  }
+
+  .dark {
+    --color-bg-primary: #030303;
+    --color-bg-secondary: rgba(255, 255, 255, 0.03);
+    --color-text-primary: #E5E7EB;
+    --color-text-secondary: #9CA3AF;
+    --color-border-primary: rgba(255, 255, 255, 0.1);
+    --shadow-card: none;
+
     color-scheme: dark;
   }
 
   body {
-    @apply bg-brand-black text-slate-200 antialiased selection:bg-brand-violet/30 selection:text-white;
+    @apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased transition-colors duration-300;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
 /* Tailwind v4 Custom Utilities */
 @utility glass {
-  background-color: var(--color-white / 5%);
+  background-color: var(--color-bg-secondary);
   backdrop-filter: blur(24px);
-  border: 1px solid var(--color-white / 10%);
-  box-shadow: var(--shadow-2xl);
+  border: 1px solid var(--color-border-primary);
 }
 
 @utility glass-card {
   @apply glass rounded-2xl p-6 transition-all duration-300;
+  box-shadow: var(--shadow-card);
+
+  .dark &:hover {
+    @apply border-white/20 bg-white/8;
+  }
 
   &:hover {
-    @apply border-white/20 bg-white/8;
+    @apply scale-[1.01];
   }
 }
 
@@ -69,15 +99,16 @@
 @utility btn-primary {
   position: relative;
   padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
+  border-radius: 0.75rem;
   font-weight: 600;
   transition-property: all;
   transition-duration: 300ms;
-  background-image: linear-gradient(to right, var(--color-brand-violet), color-mix(in srgb, var(--color-brand-violet), transparent 20%));
+  background-image: linear-gradient(to right, var(--color-brand-violet), var(--color-brand-cyan));
   color: var(--color-white);
 
   &:hover {
     box-shadow: 0 0 20px color-mix(in srgb, var(--color-brand-violet), transparent 50%);
+    filter: brightness(1.1);
   }
 
   &:active {
@@ -87,16 +118,16 @@
 
 @utility btn-secondary {
   padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
+  border-radius: 0.75rem;
   font-weight: 600;
   transition-property: all;
   transition-duration: 300ms;
-  background-color: var(--color-white / 5%);
-  border: 1px solid var(--color-white / 10%);
-  color: var(--color-white);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-primary);
 
   &:hover {
-    background-color: var(--color-white / 10%);
+    background-color: color-mix(in srgb, var(--color-bg-secondary), var(--color-text-primary) 5%);
   }
 
   &:active {

@@ -29,9 +29,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-black flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center p-6 relative overflow-hidden transition-colors duration-300">
       {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-brand-violet/20 blur-[120px] rounded-full"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-brand-violet/10 blur-[120px] rounded-full"></div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -44,15 +44,15 @@ export default function Login() {
               <Bot className="text-white w-7 h-7" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-slate-400">Log in to your SkillTest AI account</p>
+          <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">Welcome Back</h1>
+          <p className="text-[var(--color-text-secondary)]">Log in to your SkillTest AI account</p>
         </div>
 
-        <Card className="p-8 border-white/10">
+        <Card className="p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-slate-300">Email Address</label>
+              <label htmlFor="email" className="text-sm font-medium text-[var(--color-text-secondary)]">Email Address</label>
               <Input
                 id="email"
                 name="email"
@@ -68,7 +68,7 @@ export default function Login() {
             {/* Password Field */}
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label htmlFor="password" className="text-sm font-medium text-slate-300">Password</label>
+                <label htmlFor="password" className="text-sm font-medium text-[var(--color-text-secondary)]">Password</label>
                 <Link to="#" className="text-xs text-brand-violet hover:text-brand-violet/80">Forgot password?</Link>
               </div>
               <Input
@@ -112,8 +112,8 @@ export default function Login() {
           </form>
 
           {/* Create Account Link */}
-          <div className="mt-8 pt-6 border-t border-white/5 text-center">
-            <p className="text-slate-400 text-sm">
+          <div className="mt-8 pt-6 border-t border-[var(--color-border-primary)] text-center">
+            <p className="text-[var(--color-text-secondary)] text-sm">
               Don't have an account?{" "}
               <Link to="/register" className="text-brand-violet font-semibold hover:text-brand-violet/80">
                 Create one now
@@ -123,7 +123,7 @@ export default function Login() {
         </Card>
 
         {/* Trust Badge */}
-        <div className="mt-8 flex items-center justify-center space-x-2 text-slate-500 text-xs uppercase tracking-widest">
+        <div className="mt-8 flex items-center justify-center space-x-2 text-[var(--color-text-secondary)]/60 text-xs uppercase tracking-widest">
           <ShieldCheck className="w-4 h-4" />
           <span>Enterprise Grade Security</span>
         </div>

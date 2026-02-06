@@ -14,11 +14,11 @@ import { Card } from "../components/ui/Card";
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-brand-black overflow-hidden">
+        <div className="min-h-screen bg-[var(--color-bg-primary)] overflow-hidden transition-colors duration-300">
             {/* Background Decorative Elements */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-brand-violet/20 blur-[120px] rounded-full animate-pulse-slow"></div>
-                <div className="absolute bottom-[10%] -right-[10%] w-[30%] h-[30%] bg-brand-cyan/10 blur-[100px] rounded-full"></div>
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-brand-violet/10 blur-[120px] rounded-full animate-pulse-slow"></div>
+                <div className="absolute bottom-[10%] -right-[10%] w-[30%] h-[30%] bg-brand-cyan/5 blur-[100px] rounded-full"></div>
             </div>
 
             {/* Hero Section */}
@@ -32,11 +32,11 @@ export default function LandingPage() {
                         <span className="inline-block px-4 py-1.5 mb-6 text-sm font-medium bg-brand-violet/10 text-brand-violet border border-brand-violet/20 rounded-full">
                             Powered by Advanced AI
                         </span>
-                        <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight leading-tight">
+                        <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight leading-tight text-[var(--color-text-primary)]">
                             Scale Your Team with <br />
                             <span className="gradient-text">Intelligent Hiring</span>
                         </h1>
-                        <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl text-[var(--color-text-secondary)] mb-10 max-w-2xl mx-auto leading-relaxed">
                             Find, assess, and hire the top 1% of talent using our AI-driven assessment engine.
                             Reduce selection time by 80% without compromising on quality.
                         </p>
@@ -60,9 +60,9 @@ export default function LandingPage() {
                         transition={{ duration: 1, delay: 0.2 }}
                         className="mt-20 relative px-4"
                     >
-                        <div className="relative glass border-white/20 rounded-2xl p-2 md:p-4 shadow-3xl max-w-5xl mx-auto overflow-hidden">
-                            <div className="bg-brand-gray/50 rounded-xl overflow-hidden aspect-[16/9] flex items-center justify-center">
-                                <div className="text-slate-500 animate-pulse text-sm">Dashboard Preview Engine Loading...</div>
+                        <div className="relative glass border-[var(--color-border-primary)] rounded-2xl p-2 md:p-4 shadow-3xl max-w-5xl mx-auto overflow-hidden">
+                            <div className="bg-[var(--color-bg-secondary)] rounded-xl overflow-hidden aspect-[16/9] flex items-center justify-center">
+                                <div className="text-[var(--color-text-secondary)]/50 animate-pulse text-sm">Dashboard Preview Engine Loading...</div>
                                 {/* Decorative Dashboard Lines */}
                                 <div className="absolute inset-0 p-8 opacity-20 pointer-events-none">
                                     <div className="w-full h-4 bg-white/10 rounded mb-4"></div>
@@ -83,8 +83,8 @@ export default function LandingPage() {
             <section className="py-24 px-6 relative z-10">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Top Startups Choose Us</h2>
-                        <p className="text-slate-400">Everything you need to automate your recruitment funnel.</p>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--color-text-primary)]">Why Top Startups Choose Us</h2>
+                        <p className="text-[var(--color-text-secondary)]">Everything you need to automate your recruitment funnel.</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -112,8 +112,8 @@ export default function LandingPage() {
                             <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500">
                                 <Users className="w-6 h-6" />
                             </div>
-                            <h3 className="text-xl font-semibold">Predictive Analytics</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <h3 className="text-xl font-semibold text-[var(--color-text-primary)]">Predictive Analytics</h3>
+                            <p className="text-[var(--color-text-secondary)] leading-relaxed">
                                 Data-driven insights to predict candidate success and retention.
                             </p>
                         </Card>
@@ -122,23 +122,23 @@ export default function LandingPage() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 bg-white/[0.02] border-y border-white/5 px-6">
+            <section className="py-20 bg-[var(--color-bg-secondary)] border-y border-[var(--color-border-primary)] px-6">
                 <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div>
-                        <div className="text-4xl font-bold text-white mb-2">99%</div>
-                        <div className="text-sm text-slate-500 uppercase tracking-wider">Accuracy Rate</div>
+                        <div className="text-4xl font-bold text-[var(--color-text-primary)] mb-2">99%</div>
+                        <div className="text-sm text-[var(--color-text-secondary)] uppercase tracking-wider">Accuracy Rate</div>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-white mb-2">10k+</div>
-                        <div className="text-sm text-slate-500 uppercase tracking-wider">Hires Made</div>
+                        <div className="text-4xl font-bold text-[var(--color-text-primary)] mb-2">10k+</div>
+                        <div className="text-sm text-[var(--color-text-secondary)] uppercase tracking-wider">Hires Made</div>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-white mb-2">45%</div>
-                        <div className="text-sm text-slate-500 uppercase tracking-wider">Cost Reduction</div>
+                        <div className="text-4xl font-bold text-[var(--color-text-primary)] mb-2">45%</div>
+                        <div className="text-sm text-[var(--color-text-secondary)] uppercase tracking-wider">Cost Reduction</div>
                     </div>
                     <div>
-                        <div className="text-4xl font-bold text-white mb-2">24h</div>
-                        <div className="text-sm text-slate-500 uppercase tracking-wider">Avg. Time to Hire</div>
+                        <div className="text-4xl font-bold text-[var(--color-text-primary)] mb-2">24h</div>
+                        <div className="text-sm text-[var(--color-text-secondary)] uppercase tracking-wider">Avg. Time to Hire</div>
                     </div>
                 </div>
             </section>
@@ -146,9 +146,9 @@ export default function LandingPage() {
             {/* CTA Section */}
             <section className="py-24 px-6 text-center">
                 <div className="max-w-3xl mx-auto glass p-12 rounded-3xl border-brand-violet/20 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-violet/10 blur-[80px] rounded-full"></div>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to find your next unicorn?</h2>
-                    <p className="text-slate-400 mb-10">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-brand-violet/5 blur-[80px] rounded-full"></div>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--color-text-primary)]">Ready to find your next unicorn?</h2>
+                    <p className="text-[var(--color-text-secondary)] mb-10">
                         Join 500+ forward-thinking companies reinventing their hiring process.
                     </p>
                     <Button variant="primary" className="px-10 h-14 text-lg">
@@ -158,7 +158,7 @@ export default function LandingPage() {
             </section>
 
             {/* Footer */}
-            <footer className="py-12 border-t border-white/5 text-center text-slate-500 text-sm">
+            <footer className="py-12 border-t border-[var(--color-border-primary)] text-center text-[var(--color-text-secondary)] text-sm">
                 <p>&copy; 2026 SkillTest AI. All rights reserved. Designed for elite teams.</p>
             </footer>
         </div>

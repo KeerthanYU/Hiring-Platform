@@ -36,10 +36,10 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-black flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center p-6 relative overflow-hidden transition-colors duration-300">
       {/* Background Glow */}
-      <div className="absolute -bottom-[10%] -right-[10%] w-full max-w-lg aspect-square bg-brand-cyan/10 blur-[120px] rounded-full"></div>
-      <div className="absolute -top-[10%] -left-[10%] w-full max-w-lg aspect-square bg-brand-violet/10 blur-[120px] rounded-full"></div>
+      <div className="absolute -bottom-[10%] -right-[10%] w-full max-w-lg aspect-square bg-brand-cyan/5 blur-[120px] rounded-full"></div>
+      <div className="absolute -top-[10%] -left-[10%] w-full max-w-lg aspect-square bg-brand-violet/5 blur-[120px] rounded-full"></div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -52,11 +52,11 @@ export default function Register() {
               <Bot className="text-white w-7 h-7" />
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-slate-400">Join the future of AI-powered recruitment</p>
+          <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">Create Account</h1>
+          <p className="text-[var(--color-text-secondary)]">Join the future of AI-powered recruitment</p>
         </div>
 
-        <Card className="p-8 border-white/10">
+        <Card className="p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Role Selection */}
             <div className="grid grid-cols-2 gap-4 mb-8">
@@ -91,7 +91,7 @@ export default function Register() {
             {/* Name and Email Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-slate-300">Full Name</label>
+                <label htmlFor="name" className="text-sm font-medium text-[var(--color-text-secondary)]">Full Name</label>
                 <Input
                   id="name"
                   name="name"
@@ -105,7 +105,7 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-slate-300">Email Address</label>
+                <label htmlFor="email" className="text-sm font-medium text-[var(--color-text-secondary)]">Email Address</label>
                 <Input
                   id="email"
                   name="email"
@@ -121,7 +121,7 @@ export default function Register() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-slate-300">Password</label>
+              <label htmlFor="password" className="text-sm font-medium text-[var(--color-text-secondary)]">Password</label>
               <Input
                 id="password"
                 name="password"
@@ -163,8 +163,8 @@ export default function Register() {
           </form>
 
           {/* Already have an account */}
-          <div className="mt-8 pt-6 border-t border-white/5 text-center">
-            <p className="text-slate-400 text-sm">
+          <div className="mt-8 pt-6 border-t border-[var(--color-border-primary)] text-center">
+            <p className="text-[var(--color-text-secondary)] text-sm">
               Already have an account?{" "}
               <Link to="/login" className="text-brand-violet font-semibold hover:text-brand-violet/80">
                 Sign in instead
