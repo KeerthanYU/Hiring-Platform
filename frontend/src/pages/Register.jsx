@@ -26,9 +26,10 @@ export default function Register() {
     setError("");
     try {
       await register(formData);
-      navigate(formData.role === "recruiter" ? "/recruiter" : "/candidate");
+      alert("Registration successful! Please log in.");
+      navigate("/login");
     } catch (err) {
-      setError("Registration failed. Email might already be in use.");
+      setError(err.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -87,10 +88,13 @@ export default function Register() {
               </button>
             </div>
 
+            {/* Name and Email Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Full Name</label>
+                <label htmlFor="name" className="text-sm font-medium text-slate-300">Full Name</label>
                 <Input
+                  id="name"
+                  name="name"
                   type="text"
                   required
                   icon={User}
@@ -101,8 +105,10 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Email Address</label>
+                <label htmlFor="email" className="text-sm font-medium text-slate-300">Email Address</label>
                 <Input
+                  id="email"
+                  name="email"
                   type="email"
                   required
                   icon={Mail}
@@ -113,9 +119,12 @@ export default function Register() {
               </div>
             </div>
 
+            {/* Password Field */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Password</label>
+              <label htmlFor="password" className="text-sm font-medium text-slate-300">Password</label>
               <Input
+                id="password"
+                name="password"
                 type="password"
                 required
                 icon={Lock}
@@ -125,6 +134,7 @@ export default function Register() {
               />
             </div>
 
+            {/* Error Message */}
             {error && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
@@ -135,6 +145,7 @@ export default function Register() {
               </motion.p>
             )}
 
+            {/* Submit Button */}
             <Button
               type="submit"
               disabled={isLoading}
@@ -151,6 +162,7 @@ export default function Register() {
             </Button>
           </form>
 
+          {/* Already have an account */}
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
             <p className="text-slate-400 text-sm">
               Already have an account?{" "}

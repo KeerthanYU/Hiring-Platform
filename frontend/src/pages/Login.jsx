@@ -19,10 +19,10 @@ export default function Login() {
     setIsLoading(true);
     setError("");
     try {
-      const user = await login(formData.email, formData.password);
-      navigate(user.role === "recruiter" ? "/recruiter" : "/candidate");
+      const loggedInUser = await login(formData.email, formData.password);
+      navigate(loggedInUser.role === "recruiter" ? "/recruiter" : "/candidate");
     } catch (err) {
-      setError("Invalid credentials. Please try again.");
+      setError(err.message || "Invalid credentials. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -50,9 +50,12 @@ export default function Login() {
 
         <Card className="p-8 border-white/10">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Email Address</label>
+              <label htmlFor="email" className="text-sm font-medium text-slate-300">Email Address</label>
               <Input
+                id="email"
+                name="email"
                 type="email"
                 required
                 icon={Mail}
@@ -62,12 +65,15 @@ export default function Login() {
               />
             </div>
 
+            {/* Password Field */}
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-sm font-medium text-slate-300">Password</label>
+                <label htmlFor="password" className="text-sm font-medium text-slate-300">Password</label>
                 <Link to="#" className="text-xs text-brand-violet hover:text-brand-violet/80">Forgot password?</Link>
               </div>
               <Input
+                id="password"
+                name="password"
                 type="password"
                 required
                 icon={Lock}
@@ -77,6 +83,7 @@ export default function Login() {
               />
             </div>
 
+            {/* Error Message */}
             {error && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
@@ -87,6 +94,7 @@ export default function Login() {
               </motion.p>
             )}
 
+            {/* Submit Button */}
             <Button
               type="submit"
               disabled={isLoading}
@@ -103,6 +111,7 @@ export default function Login() {
             </Button>
           </form>
 
+          {/* Create Account Link */}
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
             <p className="text-slate-400 text-sm">
               Don't have an account?{" "}
