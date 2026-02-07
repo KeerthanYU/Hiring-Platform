@@ -33,7 +33,7 @@ export default function Login() {
 
   // ✅ Google OAuth login
   const googleLogin = () => {
-    window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL || "http://localhost:5000/api/auth/google";
+    window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL || "http://localhost:5002/api/auth/google";
   };
 
   return (
