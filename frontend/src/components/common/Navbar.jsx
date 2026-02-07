@@ -7,7 +7,7 @@ import { Button } from "../ui/Button";
 import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function Navbar() {
 
         {/* Auth Actions */}
         <div className="hidden md:flex items-center space-x-4">
-          {!user ? (
+          {!isAuthenticated ? (
             <>
               <Link to="/login" className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-brand-violet transition-colors">Sign in</Link>
               <Button variant="primary" className="py-2 px-5 text-sm">
@@ -50,11 +50,15 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex items-center space-x-4">
-              <Link to={user.role === 'recruiter' ? '/recruiter' : '/candidate'} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-brand-violet transition-colors">
+              <Link to={user?.role === 'recruiter' ? '/recruiter' : '/candidate'} className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-brand-violet transition-colors">
                 Dashboard
               </Link>
               <div className="h-8 w-[1px] bg-[var(--color-border-primary)]"></div>
-              <button onClick={handleLogout} className="text-[var(--color-text-secondary)] hover:text-red-500 transition-colors">
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 text-[var(--color-text-secondary)] hover:text-red-500 transition-colors"
+                title="Logout"
+              >
                 <LogOut className="w-5 h-5" />
               </button>
             </div>
@@ -76,7 +80,7 @@ export default function Navbar() {
         >
           <Link to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Home</Link>
           <Link to="/features" onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Features</Link>
-          {!user ? (
+          {!isAuthenticated ? (
             <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
               <Link to="/login" onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Sign in</Link>
               <Button variant="primary" className="w-full">
@@ -85,7 +89,7 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
-              <Link to={user.role === 'recruiter' ? '/recruiter' : '/candidate'} onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Dashboard</Link>
+              <Link to={user?.role === 'recruiter' ? '/recruiter' : '/candidate'} onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Dashboard</Link>
               <button onClick={handleLogout} className="flex items-center space-x-2 text-red-400">
                 <LogOut className="w-5 h-5" />
                 <span>Logout</span>

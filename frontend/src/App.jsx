@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import CandidateDashboard from "./pages/CandidateDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import AuthSuccess from "./pages/AuthSuccess";
+import Dashboard from "./pages/Dashboard";
 
 export default function App() {
   return (
@@ -21,6 +22,9 @@ export default function App() {
 
         {/* Google OAuth Success */}
         <Route path="/auth/success" element={<AuthSuccess />} />
+
+        {/* Generic Dashboard Redirect */}
+        <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Dashboards (Protected) */}
         <Route

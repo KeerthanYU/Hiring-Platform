@@ -7,12 +7,17 @@ import {
     Bot,
     ArrowRight,
     CheckCircle2,
-    LineChart
+    LineChart,
+    LayoutDashboard
 } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
+import useAuth from "../hooks/useAuth";
 
 export default function LandingPage() {
+    const { isAuthenticated, user } = useAuth();
+    const dashboardPath = user?.role === 'recruiter' ? '/recruiter' : '/candidate';
+
     return (
         <div className="min-h-screen bg-[var(--color-bg-primary)] overflow-hidden transition-colors duration-300">
             {/* Background Decorative Elements */}
@@ -41,15 +46,26 @@ export default function LandingPage() {
                             Reduce selection time by 80% without compromising on quality.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Button variant="primary" className="w-full sm:w-auto text-lg group">
-                                <Link to="/register" className="flex items-center">
-                                    Get Started for Free
-                                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </Link>
-                            </Button>
-                            <Button variant="secondary" className="w-full sm:w-auto text-lg">
-                                View Live Demo
-                            </Button>
+                            {!isAuthenticated ? (
+                                <>
+                                    <Button variant="primary" className="w-full sm:w-auto text-lg group">
+                                        <Link to="/register" className="flex items-center">
+                                            Get Started for Free
+                                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                        </Link>
+                                    </Button>
+                                    <Button variant="secondary" className="w-full sm:w-auto text-lg">
+                                        View Live Demo
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button variant="primary" className="w-full sm:w-auto text-lg group">
+                                    <Link to={dashboardPath} className="flex items-center">
+                                        Go to Dashboard
+                                        <LayoutDashboard className="ml-2 w-5 h-5" />
+                                    </Link>
+                                </Button>
+                            )}
                         </div>
                     </motion.div>
 
@@ -147,13 +163,21 @@ export default function LandingPage() {
             <section className="py-24 px-6 text-center">
                 <div className="max-w-3xl mx-auto glass p-12 rounded-3xl border-brand-violet/20 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-brand-violet/5 blur-[80px] rounded-full"></div>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--color-text-primary)]">Ready to find your next unicorn?</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--color-text-primary)]">
+                        {isAuthenticated ? "Ready to scale your team further?" : "Ready to find your next unicorn?"}
+                    </h2>
                     <p className="text-[var(--color-text-secondary)] mb-10">
                         Join 500+ forward-thinking companies reinventing their hiring process.
                     </p>
-                    <Button variant="primary" className="px-10 h-14 text-lg">
-                        Create Your Account
-                    </Button>
+                    {!isAuthenticated ? (
+                        <Button variant="primary" className="px-10 h-14 text-lg">
+                            <Link to="/register">Create Your Account</Link>
+                        </Button>
+                    ) : (
+                        <Button variant="primary" className="px-10 h-14 text-lg">
+                            <Link to={dashboardPath}>Return to Dashboard</Link>
+                        </Button>
+                    )}
                 </div>
             </section>
 

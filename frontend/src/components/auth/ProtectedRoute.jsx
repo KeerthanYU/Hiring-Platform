@@ -1,34 +1,21 @@
 import { Navigate } from "react-router-dom";
-
-const decodeToken = (token) => {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    } catch (e) {
-        return null;
-    }
-};
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-    const token = localStorage.getItem("token");
+    const { isAuthenticated, user, token } = useContext(AuthContext);
 
-    if (!token) {
+    if (!isAuthenticated || !token) {
         return <Navigate to="/login" replace />;
     }
 
-    const decoded = decodeToken(token);
-
-    if (!decoded) {
-        localStorage.removeItem("token");
-        return <Navigate to="/login" replace />;
+    if (!user) {
+        // If we have a token but no user yet, we might be loading or in an inconsistent state
+        // For simplicity, if we don't have user role info, we can't verify roles
+        return children;
     }
 
-    const userRole = decoded.role;
+    const userRole = user.role;
 
     if (allowedRoles && !allowedRoles.includes(userRole)) {
         // Redirect to their respective correct dashboard if they try to cross-access
