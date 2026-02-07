@@ -13,7 +13,11 @@ const User = sequelize.define('User', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+    },
+    provider: {
+        type: DataTypes.STRING,
+        defaultValue: 'local', // local | google
     },
     role: {
         type: DataTypes.STRING,

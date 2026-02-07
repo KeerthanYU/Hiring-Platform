@@ -2,10 +2,16 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import sequelize from './db.js';
+
+// Routes
 import authRoutes from './routes/auth.routes.js';
+import googleAuthRoutes from './routes/googleAuth.routes.js'; // 👈 ADD
 import jobRoutes from './routes/job.routes.js';
 import applicationRoutes from './routes/application.routes.js';
 import userRoutes from './routes/user.routes.js';
+
+// Passport
+import passport from './config/passport.js'; // 👈 ADD
 
 // Models for syncing
 import User from './models/User.js';
@@ -18,12 +24,15 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:3000',
     credentials: true
 }));
-app.use(express.json()); // Essential for parsing POST bodies
+app.use(express.json());
 
-// Routes
+// 🔐 Initialize Passport (IMPORTANT)
+app.use(passport.initialize());
+
+// Health check
 app.get("/", (req, res) => {
     res.json({
         message: "Hiring Platform Backend API is running",
@@ -32,17 +41,23 @@ app.get("/", (req, res) => {
     });
 });
 
+// Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/auth', googleAuthRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/users', userRoutes);
 
 // Sync database and start server
 const PORT = process.env.PORT || 5002;
-sequelize.sync({ alter: true }).then(() => {
-    console.log('✅ Database synced');
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-}).catch(err => {
-    console.error('❌ Database sync failed:', err);
-});
 
+sequelize.sync({ alter: true })
+    .then(() => {
+        console.log('✅ Database synced');
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+        });
+    })
+    .catch(err => {
+        console.error('❌ Database sync failed:', err);
+    });
