@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
-const API_BASE = "http://localhost:5002/api";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     if (!contentType || !contentType.includes("application/json")) {
       const text = await res.text();
       console.error("❌ Non-JSON response received:", text.slice(0, 100));
-      throw new Error("Server returned an invalid response (HTML instead of JSON). Check if the backend is running on Port 5002.");
+      throw new Error(`Server returned an invalid response (HTML instead of JSON). Check if the backend is running on ${API_BASE}.`);
     }
 
     const data = await res.json();

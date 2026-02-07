@@ -1,4 +1,17 @@
 # Environment variables
 .env
-backend/.env
-frontend/.env
+**/.env
+**/.env.local
+**/.env.*
+
+# Database
+*.db
+*.sqlite
+database.db
+database.sqlite
+
+# Node
+node_modules/
+dist/
+build/
+.DS_Store
