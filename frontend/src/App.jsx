@@ -1,21 +1,44 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CandidateDashboard from "./pages/CandidateDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
+import AuthSuccess from "./pages/AuthSuccess";
 
 export default function App() {
   return (
     <>
       <Navbar />
+
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/candidate" element={<CandidateDashboard />} />
-        <Route path="/recruiter" element={<RecruiterDashboard />} />
+
+        {/* Google OAuth Success */}
+        <Route path="/auth/success" element={<AuthSuccess />} />
+
+        {/* Dashboards (Protected) */}
+        <Route
+          path="/candidate"
+          element={
+            <ProtectedRoute allowedRoles={["candidate"]}>
+              <CandidateDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter"
+          element={
+            <ProtectedRoute allowedRoles={["recruiter"]}>
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
