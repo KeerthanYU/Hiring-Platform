@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes.js";
 import googleAuthRoutes from "./routes/googleAuth.routes.js";
 import jobRoutes from "./routes/job.routes.js";
 import applicationRoutes from "./routes/application.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 
@@ -19,6 +20,7 @@ import passport from "./config/passport.js";
 import User from "./models/User.js";
 import Application from "./models/Application.js";
 import AuditLog from "./models/AuditLog.js";
+import "./models/associations.js"; // Import associations
 
 dotenv.config();
 

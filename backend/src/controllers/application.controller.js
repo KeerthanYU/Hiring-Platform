@@ -1,6 +1,36 @@
 import Application from "../models/Application.js";
 import Job from "../models/Job.js";
+import User from "../models/User.js"; // Import User model
 import { calculateAIScore } from "../services/ai.service.js";
+import Notification from "../models/Notification.js";
+
+// Get all applications for a recruiter
+export const getRecruiterApplications = async (req, res) => {
+    try {
+        const recruiterId = req.user.id;
+
+        const applications = await Application.findAll({
+            where: { recruiterId },
+            include: [
+                {
+                    model: Job,
+                    attributes: ["title", "company"],
+                },
+                {
+                    model: User,
+                    as: "candidate", // Ensure this alias matches your association in db.js or models
+                    attributes: ["name", "email", "id"],
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+
+        res.json(applications);
+    } catch (error) {
+        console.error("Get recruiter applications error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 export const applyJob = async (req, res) => {
     try {
@@ -43,8 +73,8 @@ export const applyJob = async (req, res) => {
             });
         }
 
-        // 5️⃣ Calculate AI score (basic for now)
-        const aiScore = calculateAIScore({
+        // 5️⃣ Calculate AI score and feedback
+        const { score, feedback } = await calculateAIScore({
             resumePath: req.file.path,
             jobId,
         });
@@ -56,8 +86,17 @@ export const applyJob = async (req, res) => {
             recruiterId: job.recruiterId,
             resumeUrl: req.file.path,
             coverNote: coverNote || null,
-            aiScore,
+            aiScore: score,
+            aiFeedback: feedback,
             status: "APPLIED",
+        });
+
+        // 7️⃣ Notify Recruiter
+        await Notification.create({
+            userId: job.recruiterId,
+            message: `New application received for ${job.title} from ${user.name || "a candidate"}`,
+            type: "APPLICATION",
+            relatedId: application.id,
         });
 
         return res.status(201).json({

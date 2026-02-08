@@ -40,6 +40,11 @@ const Application = sequelize.define(
             allowNull: true,
         },
 
+        aiFeedback: {
+            type: DataTypes.JSON, // Stores { strengths: [], weaknesses: [], skills: [] }
+            allowNull: true,
+        },
+
         status: {
             type: DataTypes.ENUM(
                 "APPLIED",
