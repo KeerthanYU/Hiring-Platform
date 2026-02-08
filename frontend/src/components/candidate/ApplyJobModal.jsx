@@ -9,6 +9,7 @@ export default function ApplyJobModal({ isOpen, onClose, onSubmit, loading, jobT
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            console.log("📄 ApplyJobModal: File selected:", file.name, file.type, file.size);
             if (file.type !== "application/pdf") {
                 setError("Only PDF files are allowed.");
                 setResume(null);
@@ -30,6 +31,7 @@ export default function ApplyJobModal({ isOpen, onClose, onSubmit, loading, jobT
             setError("Please upload a resume.");
             return;
         }
+        console.log("🚀 ApplyJobModal: Submitting application with file:", resume.name);
         await onSubmit(resume);
     };
 

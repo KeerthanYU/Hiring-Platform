@@ -14,11 +14,12 @@ import { Card } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { Input } from "../ui/Input";
+import ApplyJob from "./ApplyJob";
 
 export default function JobListings() {
     const [search, setSearch] = useState("");
-    const [appliedJobs, setAppliedJobs] = useState([]);
 
+    // Mock data - in a real app this would come from an API
     const jobs = [
         {
             id: 1,
@@ -65,12 +66,6 @@ export default function JobListings() {
             level: "Lead"
         }
     ];
-
-    const handleApply = (id) => {
-        if (!appliedJobs.includes(id)) {
-            setAppliedJobs([...appliedJobs, id]);
-        }
-    };
 
     const filteredJobs = jobs.filter(job =>
         job.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -148,20 +143,14 @@ export default function JobListings() {
                                     </div>
 
                                     <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/5 pt-6 md:pt-0 md:pl-8">
-                                        {appliedJobs.includes(job.id) ? (
-                                            <div className="w-full flex items-center justify-center gap-2 text-emerald-500 font-bold bg-emerald-500/10 py-3 rounded-xl border border-emerald-500/20">
-                                                <CheckCircle2 className="w-5 h-5" />
-                                                Applied
-                                            </div>
-                                        ) : (
-                                            <Button
-                                                onClick={() => handleApply(job.id)}
-                                                className="w-full group/btn"
-                                            >
-                                                Quick Apply
-                                                <ArrowUpRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                                            </Button>
-                                        )}
+                                        <ApplyJob
+                                            jobId={job.id}
+                                            jobTitle={job.title}
+                                            className="w-full group/btn flex items-center justify-center gap-2 bg-white text-brand-black font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors"
+                                        >
+                                            Quick Apply
+                                            <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                                        </ApplyJob>
                                         <Button variant="secondary" className="w-full">View Details</Button>
                                     </div>
                                 </div>

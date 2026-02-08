@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { applyJob } from "./api/applyJob";
 import ApplyJobModal from "./ApplyJobModal";
+import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 
-export default function ApplyJob({ jobId, jobTitle = "this job" }) {
+export default function ApplyJob({ jobId, jobTitle = "this job", className = "", children }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [hasApplied, setHasApplied] = useState(false);
 
     const handleApply = async (resumeFile) => {
+        console.log("🔄 ApplyJob component: handleApply called", { jobId, resumeFile });
         try {
             setLoading(true);
             await applyJob(jobId, resumeFile);
             setHasApplied(true);
             setIsModalOpen(false);
-            alert("Application submitted successfully! Our AI is reviewing your resume.");
+            // alert("Application submitted successfully! Our AI is reviewing your resume."); // Removed alert for smoother UX
         } catch (err) {
             console.error("Apply failed:", err);
             alert(err.response?.data?.message || err.message || "Apply failed");
@@ -24,12 +26,10 @@ export default function ApplyJob({ jobId, jobTitle = "this job" }) {
 
     if (hasApplied) {
         return (
-            <button
-                disabled
-                className="px-6 py-2 bg-green-600 text-white rounded-lg cursor-default opacity-80 font-medium"
-            >
-                Applied ✓
-            </button>
+            <div className={`flex items-center justify-center gap-2 text-emerald-500 font-bold bg-emerald-500/10 py-3 rounded-xl border border-emerald-500/20 ${className}`}>
+                <CheckCircle2 className="w-5 h-5" />
+                Applied
+            </div>
         );
     }
 
@@ -37,9 +37,10 @@ export default function ApplyJob({ jobId, jobTitle = "this job" }) {
         <>
             <button
                 onClick={() => setIsModalOpen(true)}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-sm"
+                className={className}
+                disabled={loading}
             >
-                Apply Now
+                {children || "Apply Now"}
             </button>
 
             <ApplyJobModal
