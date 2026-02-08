@@ -6,6 +6,7 @@ export default function ApplyJob({ jobId }) {
     const [loading, setLoading] = useState(false);
 
     const handleApply = async () => {
+        console.log("Apply button clicked");
         if (!resume) {
             alert("Please upload your resume");
             return;
