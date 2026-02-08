@@ -1,26 +1,60 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../db.js';
+import { DataTypes } from "sequelize";
+import sequelize from "../db.js";
 
-const Application = sequelize.define('Application', {
-    candidateId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+const Application = sequelize.define(
+    "Application",
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+
+        candidateId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+
+        jobId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+
+        recruiterId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+
+        resumeUrl: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+
+        coverNote: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+
+        aiScore: {
+            type: DataTypes.FLOAT,
+            allowNull: true,
+        },
+
+        status: {
+            type: DataTypes.ENUM(
+                "APPLIED",
+                "REVIEWED",
+                "SHORTLISTED",
+                "REJECTED",
+                "HIRED"
+            ),
+            defaultValue: "APPLIED",
+        },
     },
-    jobId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    resumeUrl: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    aiScore: {
-        type: DataTypes.FLOAT,
-    },
-    status: {
-        type: DataTypes.STRING,
-        defaultValue: 'pending',
-    },
-});
+    {
+        timestamps: true,
+        tableName: "applications",
+    }
+);
 
 export default Application;
