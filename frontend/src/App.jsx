@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CandidateDashboard from "./pages/CandidateDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
+import AdminDashboard from "./pages/AdminDashboard"; // 👈 ADD
 import AuthSuccess from "./pages/AuthSuccess";
 import Dashboard from "./pages/Dashboard";
 
@@ -40,6 +41,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["recruiter"]}>
               <RecruiterDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

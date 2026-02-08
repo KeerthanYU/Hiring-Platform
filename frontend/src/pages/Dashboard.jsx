@@ -13,5 +13,9 @@ export default function Dashboard() {
         return <Navigate to="/recruiter" replace />;
     }
 
+    if (user?.role === "admin") {
+        return <Navigate to="/admin" replace />;
+    }
+
     return <Navigate to="/candidate" replace />;
 }

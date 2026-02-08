@@ -19,7 +19,11 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
     if (allowedRoles && !allowedRoles.includes(userRole)) {
         // Redirect to their respective correct dashboard if they try to cross-access
-        return <Navigate to={userRole === "recruiter" ? "/recruiter" : "/candidate"} replace />;
+        let redirectPath = "/candidate";
+        if (userRole === "recruiter") redirectPath = "/recruiter";
+        if (userRole === "admin") redirectPath = "/admin";
+
+        return <Navigate to={redirectPath} replace />;
     }
 
     return children;
