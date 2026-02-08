@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
@@ -7,17 +7,41 @@ import {
   Search,
   TrendingUp,
   Filter,
-  MoreVertical
+  Bell
 } from "lucide-react";
 import JobForm from "../components/recruiter/JobForm";
 import CandidateList from "../components/recruiter/CandidateList";
 import useAuth from "../hooks/useAuth";
-import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
+import { fetchNotifications, markNotificationRead } from "../components/common/api/notifications";
 
 export default function RecruiterDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("candidates");
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const loadNotifications = async () => {
+    try {
+      const data = await fetchNotifications();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Failed to load notifications", err);
+    }
+  };
+
+  const handleReadNotification = async (id) => {
+    try {
+      await markNotificationRead(id);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    } catch (err) {
+      console.error("Failed to mark read", err);
+    }
+  };
 
   const tabs = [
     { id: "candidates", label: "Talent Pool", icon: Users },
@@ -31,7 +55,7 @@ export default function RecruiterDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-brand-black pt-28 pb-12 px-6">
+    <div className="min-h-screen bg-brand-black pt-28 pb-12 px-6 relative">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -54,24 +78,73 @@ export default function RecruiterDashboard() {
             <p className="text-slate-400">Welcome, {user?.name || 'Partner'}. Monitor your talent pipeline and active listings.</p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
-                className="glass px-6 py-4 rounded-2xl flex items-center gap-4 min-w-[180px]"
+          <div className="flex items-center gap-6">
+            {/* Notification Bell */}
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
               >
-                <div className={`w-10 h-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center`}>
-                  <stat.icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-xs text-slate-500 uppercase font-medium">{stat.label}</div>
-                  <div className="text-xl font-bold text-white">{stat.value}</div>
-                </div>
-              </motion.div>
-            ))}
+                <Bell className="w-6 h-6 text-slate-300" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-brand-black"></span>
+                )}
+              </button>
+
+              {/* Notification Dropdown */}
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-2 w-80 bg-gray-900 border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                  >
+                    <div className="p-4 border-b border-white/10 flex justify-between items-center">
+                      <h3 className="text-white font-bold">Notifications</h3>
+                      <span className="text-xs text-slate-400">{notifications.length} new</span>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-slate-500 text-sm">No new notifications</div>
+                      ) : (
+                        notifications.map(notif => (
+                          <div key={notif.id} className="p-3 border-b border-white/5 hover:bg-white/5 transition-colors flex justify-between gap-2">
+                            <p className="text-sm text-slate-300">{notif.message}</p>
+                            <button
+                              onClick={() => handleReadNotification(notif.id)}
+                              className="text-xs text-brand-violet hover:text-white whitespace-nowrap"
+                            >
+                              Mark read
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="glass px-6 py-4 rounded-2xl flex items-center gap-4 min-w-[180px]"
+                >
+                  <div className={`w-10 h-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center`}>
+                    <stat.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-500 uppercase font-medium">{stat.label}</div>
+                    <div className="text-xl font-bold text-white">{stat.value}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </header>
 

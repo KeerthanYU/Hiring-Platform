@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
   Calendar,
-  Award,
   ExternalLink,
-  CheckCircle2,
-  Clock,
   Search,
   Filter
 } from "lucide-react";
@@ -15,53 +12,40 @@ import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { Input } from "../ui/Input";
 import { cn } from "../../utils/cn";
+import { fetchRecruiterApplications } from "./api/applications";
 
 export default function CandidateList() {
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
-  const candidates = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.j@example.com",
-      score: 92,
-      skills: ["React", "TypeScript", "Node.js"],
-      status: "qualified",
-      testDate: "Feb 1, 2026",
-      avatar: "SJ"
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      email: "michael.c@example.com",
-      score: 88,
-      skills: ["JavaScript", "Python", "AWS"],
-      status: "qualified",
-      testDate: "Jan 30, 2026",
-      avatar: "MC"
-    },
-    {
-      id: 3,
-      name: "Emma Davis",
-      email: "emma.d@example.com",
-      score: 76,
-      skills: ["React", "CSS", "UI/UX"],
-      status: "pending",
-      testDate: "Jan 28, 2026",
-      avatar: "ED"
-    },
-    {
-      id: 4,
-      name: "James Wilson",
-      email: "james.w@example.com",
-      score: 84,
-      skills: ["Vue", "Node.js", "MongoDB"],
-      status: "qualified",
-      testDate: "Jan 25, 2026",
-      avatar: "JW"
-    },
-  ];
+  useEffect(() => {
+    const loadApplications = async () => {
+      try {
+        const data = await fetchRecruiterApplications();
+        // Map backend data to UI format
+        const mappedCandidates = data.map(app => ({
+          id: app.id,
+          name: app.candidate?.name || "Unknown Candidate",
+          email: app.candidate?.email || "No Email",
+          score: app.aiScore || 0,
+          skills: app.aiFeedback?.skills || [], // Assuming aiFeedback has skills
+          status: app.status.toLowerCase(),
+          testDate: new Date(app.createdAt).toLocaleDateString(),
+          avatar: (app.candidate?.name || "U").charAt(0).toUpperCase(),
+          feedback: app.aiFeedback
+        }));
+        setCandidates(mappedCandidates);
+      } catch (err) {
+        console.error("Failed to fetch applications:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadApplications();
+  }, []);
 
   const filteredCandidates = candidates.filter((candidate) => {
     const matchesSearch = candidate.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -70,6 +54,10 @@ export default function CandidateList() {
     if (filter === "all") return true;
     return candidate.status === filter;
   });
+
+  if (loading) {
+    return <div className="text-white text-center py-10">Loading applications...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -84,18 +72,17 @@ export default function CandidateList() {
           />
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <Button variant="secondary" className="gap-2 text-xs h-10">
-            <Filter className="w-4 h-4" />
-            Filter
-          </Button>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className="bg-white/5 border border-white/10 rounded-xl px-4 h-10 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-violet transition-all"
           >
             <option value="all">All Status</option>
-            <option value="qualified">Qualified</option>
-            <option value="pending">Pending</option>
+            <option value="applied">Applied</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="rejected">Rejected</option>
+            <option value="hired">Hired</option>
           </select>
         </div>
       </div>
@@ -138,7 +125,7 @@ export default function CandidateList() {
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {candidate.skills.map((skill, idx) => (
+                  {candidate.skills.slice(0, 5).map((skill, idx) => (
                     <Badge key={idx}>{skill}</Badge>
                   ))}
                 </div>
@@ -149,8 +136,11 @@ export default function CandidateList() {
                       <Calendar className="w-3.5 h-3.5 mr-1.5" />
                       {candidate.testDate}
                     </div>
-                    <Badge variant={candidate.status === 'qualified' ? 'success' : 'info'}>
-                      {candidate.status}
+                    <Badge variant={
+                      candidate.status === 'qualified' || candidate.status === 'shortlisted' ? 'success' :
+                        candidate.status === 'rejected' ? 'danger' : 'info'
+                    }>
+                      {candidate.status.toUpperCase()}
                     </Badge>
                   </div>
                   <Button variant="ghost" className="p-2 h-auto text-slate-400 hover:text-white">

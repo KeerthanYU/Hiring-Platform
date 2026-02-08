@@ -1,30 +1,19 @@
+import api from "../../common/api/axios";
+
 export const applyJob = async (jobId, resumeFile) => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-        throw new Error("Please login first");
-    }
-
     const formData = new FormData();
     formData.append("jobId", jobId);
     formData.append("resume", resumeFile);
 
-    const res = await fetch(
-        "http://localhost:5002/api/applications/apply",
-        {
-            method: "POST",
+    try {
+        const response = await api.post("/applications/apply", formData, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
             },
-            body: formData,
-        }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-        throw new Error(data.message || "Failed to apply");
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
     }
-
-    return data;
 };
+
