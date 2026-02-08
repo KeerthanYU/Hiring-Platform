@@ -72,6 +72,12 @@ export const login = async (req, res) => {
                 .json({ success: false, message: "Invalid credentials" });
         }
 
+        if (user.accountStatus === 'suspended') {
+            return res
+                .status(403)
+                .json({ success: false, message: "Your account has been suspended. Please contact support." });
+        }
+
         const token = jwt.sign(
             {
                 id: user.id,
@@ -91,6 +97,8 @@ export const login = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                accountStatus: user.accountStatus,
+                isVerifiedRecruiter: user.isVerifiedRecruiter,
             },
         });
     } catch (err) {

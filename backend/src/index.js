@@ -9,6 +9,7 @@ import googleAuthRoutes from './routes/googleAuth.routes.js'; // 👈 ADD
 import jobRoutes from './routes/job.routes.js';
 import applicationRoutes from './routes/application.routes.js';
 import userRoutes from './routes/user.routes.js';
+import adminRoutes from './routes/admin.routes.js'; // 👈 ADD Admin Routes
 
 // Passport
 import passport from './config/passport.js'; // 👈 ADD
@@ -17,6 +18,7 @@ import passport from './config/passport.js'; // 👈 ADD
 import User from './models/User.js';
 import Job from './models/Job.js';
 import Application from './models/Application.js';
+import AuditLog from './models/AuditLog.js'; // 👈 ADD AuditLog
 
 dotenv.config();
 
@@ -24,7 +26,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true
 }));
 app.use(express.json());
@@ -46,7 +48,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/auth', googleAuthRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/applications', applicationRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes); // 👈 ADD Admin Routes Mount
 
 // Sync database and start server
 const PORT = process.env.PORT || 5002;

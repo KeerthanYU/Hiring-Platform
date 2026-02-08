@@ -22,7 +22,15 @@ const User = sequelize.define('User', {
     role: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'candidate',
+        defaultValue: 'candidate', // candidate | recruiter | admin
+    },
+    accountStatus: {
+        type: DataTypes.STRING,
+        defaultValue: 'active', // active | suspended | pending
+    },
+    isVerifiedRecruiter: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
 });
 
