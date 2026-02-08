@@ -73,9 +73,9 @@ const AdminDashboard = () => {
     }, [activeTab]);
 
     return (
-        <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
+        <div className="h-screen pt-24 bg-[var(--bg-primary)] text-[var(--text-primary)] flex overflow-hidden">
             {/* Sidebar */}
-            <aside className="w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-primary)] p-6 flex flex-col">
+            <aside className="hidden md:flex w-64 h-full bg-[var(--bg-secondary)] border-r border-[var(--border-primary)] p-6 flex-col overflow-y-auto">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-[var(--color-brand-violet)] to-[var(--color-brand-cyan)] bg-clip-text text-transparent mb-8">
                     Admin Panel
                 </h2>
@@ -115,7 +115,7 @@ const AdminDashboard = () => {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8 overflow-y-auto">
+            <main className="flex-1 h-full p-8 overflow-y-auto">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold mb-2">Dashboard Overview</h1>
                     {metrics && (
