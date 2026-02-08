@@ -33,6 +33,11 @@ export const getRecruiterApplications = async (req, res) => {
 };
 
 export const applyJob = async (req, res) => {
+    console.log("👉 applyJob controller hit!");
+    console.log("📦 Body:", req.body);
+    console.log("📂 File:", req.file);
+    console.log("👤 User:", req.user);
+
     try {
         const { jobId, coverNote } = req.body;
         const user = req.user;

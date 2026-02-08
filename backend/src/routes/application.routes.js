@@ -20,6 +20,10 @@ router.get(
 // Apply to a job (candidate only)
 router.post(
     "/apply",
+    (req, res, next) => {
+        console.log("🚀 Route /api/applications/apply hit");
+        next();
+    },
     auth,
     roleMiddleware("candidate"),
     uploadResume.single("resume"),
