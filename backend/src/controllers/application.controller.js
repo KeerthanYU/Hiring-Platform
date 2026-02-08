@@ -1,5 +1,5 @@
 import Application from "../models/Application.js";
-import Job from "../models/job.js";
+import Job from "../models/Job.js";
 import { calculateAIScore } from "../services/ai.service.js";
 
 export const applyJob = async (req, res) => {
