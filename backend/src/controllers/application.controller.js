@@ -1,4 +1,5 @@
 import Application from "../models/Application.js";
+
 import Job from "../models/Job.js";
 import User from "../models/User.js"; // Import User model
 import { calculateAIScore } from "../services/ai.service.js";
@@ -40,6 +41,7 @@ export const applyJob = async (req, res) => {
 
     try {
         const { jobId, coverNote } = req.body;
+
         const user = req.user;
 
         // 1️⃣ Role check
