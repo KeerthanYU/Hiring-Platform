@@ -59,12 +59,12 @@ export default function JobForm() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <Card className="p-8 md:p-10 border-white/10 relative overflow-hidden">
+      <Card className="p-8 md:p-10 border-[var(--color-border-primary)] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-violet/10 blur-[60px] rounded-full"></div>
 
         <header className="mb-10 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">Create New Opening</h2>
-          <p className="text-slate-400">Fill in the details to publish your job listing.</p>
+          <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">Create New Opening</h2>
+          <p className="text-[var(--color-text-secondary)]">Fill in the details to publish your job listing.</p>
         </header>
 
         <AnimatePresence>
@@ -89,7 +89,7 @@ export default function JobForm() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300">Job Title</label>
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Job Title</label>
             <Input
               name="title"
               required
@@ -102,7 +102,7 @@ export default function JobForm() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Location</label>
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">Location</label>
               <Input
                 name="location"
                 required
@@ -113,11 +113,11 @@ export default function JobForm() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Job Type</label>
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">Job Type</label>
               <select
                 name="type"
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-white focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-medium"
+                className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl py-2.5 px-4 text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-medium"
                 value={formData.type}
                 onChange={handleChange}
               >
@@ -130,13 +130,13 @@ export default function JobForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300">Experience Level</label>
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Experience Level</label>
             <div className="relative">
-              <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
               <select
                 name="experience"
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-medium appearance-none"
+                className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl py-2.5 pl-10 pr-4 text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-medium appearance-none"
                 value={formData.experience}
                 onChange={handleChange}
               >
@@ -150,7 +150,7 @@ export default function JobForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300">Required Skills</label>
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Required Skills</label>
             <Textarea
               name="requiredSkills"
               required
@@ -163,7 +163,7 @@ export default function JobForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300">Description</label>
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Description</label>
             <Textarea
               name="description"
               required

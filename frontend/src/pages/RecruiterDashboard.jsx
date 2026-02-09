@@ -55,7 +55,7 @@ export default function RecruiterDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-brand-black pt-28 pb-12 px-6 relative">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] pt-28 pb-12 px-6 relative transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -71,11 +71,11 @@ export default function RecruiterDashboard() {
             <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl font-bold text-white mb-2"
+              className="text-4xl font-bold text-[var(--color-text-primary)] mb-2"
             >
               Find the Next <span className="gradient-text">Elite Team</span>
             </motion.h1>
-            <p className="text-slate-400">Welcome, {user?.name || 'Partner'}. Monitor your talent pipeline and active listings.</p>
+            <p className="text-[var(--color-text-secondary)]">Welcome, {user?.name || 'Partner'}. Monitor your talent pipeline and active listings.</p>
           </div>
 
           <div className="flex items-center gap-6">
@@ -139,8 +139,8 @@ export default function RecruiterDashboard() {
                     <stat.icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-500 uppercase font-medium">{stat.label}</div>
-                    <div className="text-xl font-bold text-white">{stat.value}</div>
+                    <div className="text-xs text-[var(--color-text-secondary)] uppercase font-medium">{stat.label}</div>
+                    <div className="text-xl font-bold text-[var(--color-text-primary)]">{stat.value}</div>
                   </div>
                 </motion.div>
               ))}
@@ -150,12 +150,12 @@ export default function RecruiterDashboard() {
 
         {/* Dashboard Actions Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-          <div className="flex bg-white/5 p-1 rounded-2xl w-fit border border-white/5">
+          <div className="flex bg-[var(--color-bg-tertiary)] p-1 rounded-2xl w-fit border border-[var(--color-border-primary)]">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 relative ${activeTab === tab.id ? "text-white" : "text-slate-400 hover:text-white"
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 relative ${activeTab === tab.id ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
                   }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -163,7 +163,7 @@ export default function RecruiterDashboard() {
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="recruiterTab"
-                    className="absolute inset-0 bg-brand-violet/20 border border-brand-violet/30 rounded-xl -z-10"
+                    className="absolute inset-0 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-xl shadow-sm -z-10"
                   />
                 )}
               </button>
@@ -172,11 +172,11 @@ export default function RecruiterDashboard() {
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
               <input
                 type="text"
                 placeholder="Search candidates..."
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-violet/50"
+                className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl py-2 pl-10 pr-4 text-sm text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-brand-violet/50"
               />
             </div>
             <Button variant="secondary" className="p-2.5 rounded-xl">

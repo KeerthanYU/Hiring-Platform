@@ -1,18 +1,27 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brand Colors */
   --color-brand-violet: #8B5CF6;
   --color-brand-cyan: #06B6D4;
+  --color-brand-black: #030303;
 
-  /* Theme Variables */
+  /* Semantic Color Map */
   --bg-primary: var(--color-bg-primary);
   --bg-secondary: var(--color-bg-secondary);
+  --bg-tertiary: var(--color-bg-tertiary);
+
   --text-primary: var(--color-text-primary);
   --text-secondary: var(--color-text-secondary);
-  --accent-primary: var(--color-brand-violet);
-  --accent-secondary: var(--color-brand-cyan);
-  --border-primary: var(--color-border-primary);
+  --text-muted: var(--color-text-muted);
+  --text-inverted: var(--color-text-inverted);
 
+  --border-primary: var(--color-border-primary);
+  --border-secondary: var(--color-border-secondary);
+
+  --shadow-card: var(--shadow-card-val);
+
+  /* Animations */
   --animate-shimmer: shimmer 2s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -41,25 +50,56 @@
 }
 
 @layer base {
-
   :root {
-    --color-bg-primary: #F9FAFB;
-    --color-bg-secondary: #FFFFFF;
-    --color-text-primary: #111827;
-    --color-text-secondary: #4B5563;
-    --color-border-primary: #E5E7EB;
-    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    /* Light Mode - Zinc Based */
+    --color-bg-primary: #f8fafc;
+    /* Zinc 50 */
+    --color-bg-secondary: #ffffff;
+    /* White */
+    --color-bg-tertiary: #f1f5f9;
+    /* Zinc 100 */
+
+    --color-text-primary: #0f172a;
+    /* Zinc 900 */
+    --color-text-secondary: #475569;
+    /* Zinc 600 */
+    --color-text-muted: #94a3b8;
+    /* Zinc 400 */
+    --color-text-inverted: #ffffff;
+
+    --color-border-primary: #e2e8f0;
+    /* Zinc 200 */
+    --color-border-secondary: #f1f5f9;
+    /* Zinc 100 */
+
+    --shadow-card-val: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 
     color-scheme: light;
   }
 
   .dark {
-    --color-bg-primary: #030303;
-    --color-bg-secondary: rgba(255, 255, 255, 0.03);
-    --color-text-primary: #E5E7EB;
-    --color-text-secondary: #9CA3AF;
-    --color-border-primary: rgba(255, 255, 255, 0.1);
-    --shadow-card: none;
+    /* Dark Mode - Zinc Based */
+    --color-bg-primary: #09090b;
+    /* Zinc 950 */
+    --color-bg-secondary: #18181b;
+    /* Zinc 900 */
+    --color-bg-tertiary: #27272a;
+    /* Zinc 800 */
+
+    --color-text-primary: #f8fafc;
+    /* Zinc 50 */
+    --color-text-secondary: #a1a1aa;
+    /* Zinc 400 */
+    --color-text-muted: #52525b;
+    /* Zinc 600 */
+    --color-text-inverted: #000000;
+
+    --color-border-primary: #27272a;
+    /* Zinc 800 */
+    --color-border-secondary: #18181b;
+    /* Zinc 900 */
+
+    --shadow-card-val: none;
 
     color-scheme: dark;
   }
@@ -72,21 +112,21 @@
 
 /* Tailwind v4 Custom Utilities */
 @utility glass {
-  background-color: var(--color-bg-secondary);
-  backdrop-filter: blur(24px);
+  background-color: color-mix(in srgb, var(--color-bg-secondary) 70%, transparent);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--color-border-primary);
 }
 
 @utility glass-card {
   @apply glass rounded-2xl p-6 transition-all duration-300;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-val);
 
   .dark &:hover {
-    @apply border-white/20 bg-white/8;
+    @apply border-[var(--color-text-primary)]/10 bg-[var(--color-bg-secondary)]/80;
   }
 
   &:hover {
-    @apply scale-[1.01];
+    @apply scale-[1.01] shadow-md;
   }
 }
 
@@ -104,7 +144,8 @@
   transition-property: all;
   transition-duration: 300ms;
   background-image: linear-gradient(to right, var(--color-brand-violet), var(--color-brand-cyan));
-  color: var(--color-white);
+  color: var(--color-text-inverted);
+  border: 1px solid transparent;
 
   &:hover {
     box-shadow: 0 0 20px color-mix(in srgb, var(--color-brand-violet), transparent 50%);
@@ -113,6 +154,12 @@
 
   &:active {
     scale: 0.95;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
   }
 }
 
@@ -127,11 +174,30 @@
   color: var(--color-text-primary);
 
   &:hover {
-    background-color: color-mix(in srgb, var(--color-bg-secondary), var(--color-text-primary) 5%);
+    background-color: var(--color-bg-tertiary);
+    border-color: var(--color-text-secondary);
   }
 
   &:active {
     scale: 0.95;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@utility btn-ghost {
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
   }
 }
 
@@ -151,15 +217,15 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: var(--color-brand-black);
+  background-color: var(--color-bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--color-white / 10%);
+  background-color: var(--color-border-primary);
   border-radius: 9999px;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: var(--color-white / 20%);
+    background-color: var(--color-text-muted);
   }
 }

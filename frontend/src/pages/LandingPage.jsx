@@ -109,7 +109,7 @@ export default function LandingPage() {
                                 <Bot className="w-6 h-6" />
                             </div>
                             <h3 className="text-xl font-semibold">AI Assessments</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-[var(--color-text-secondary)] leading-relaxed">
                                 Automated skill testing that adapts to candidate performance in real-time.
                             </p>
                         </Card>
@@ -119,7 +119,7 @@ export default function LandingPage() {
                                 <Search className="w-6 h-6" />
                             </div>
                             <h3 className="text-xl font-semibold">Smart Sourcing</h3>
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-[var(--color-text-secondary)] leading-relaxed">
                                 Connect with candidates from our curated pool based on technical alignment.
                             </p>
                         </Card>

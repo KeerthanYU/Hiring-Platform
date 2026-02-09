@@ -56,13 +56,13 @@ export default function CandidateList() {
   });
 
   if (loading) {
-    return <div className="text-white text-center py-10">Loading applications...</div>;
+    return <div className="text-[var(--color-text-secondary)] text-center py-10">Loading applications...</div>;
   }
 
   return (
     <div className="space-y-8">
       {/* Header / Search */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[var(--color-bg-tertiary)] p-4 rounded-2xl border border-[var(--color-border-primary)]">
         <div className="w-full md:max-w-md">
           <Input
             placeholder="Search candidates or skills..."
@@ -75,7 +75,7 @@ export default function CandidateList() {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-xl px-4 h-10 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-violet transition-all"
+            className="bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl px-4 h-10 text-xs text-[var(--color-text-primary)] focus:outline-none focus:ring-1 focus:ring-brand-violet transition-all"
           >
             <option value="all">All Status</option>
             <option value="applied">Applied</option>
@@ -105,10 +105,10 @@ export default function CandidateList() {
                       {candidate.avatar}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white group-hover:text-brand-violet transition-colors">
+                      <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-brand-violet transition-colors">
                         {candidate.name}
                       </h3>
-                      <div className="flex items-center text-slate-400 text-sm mt-1">
+                      <div className="flex items-center text-[var(--color-text-secondary)] text-sm mt-1">
                         <Mail className="w-3.5 h-3.5 mr-1.5" />
                         {candidate.email}
                       </div>
@@ -120,7 +120,7 @@ export default function CandidateList() {
                     )}>
                       {candidate.score}%
                     </div>
-                    <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">AI Score</div>
+                    <div className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-widest font-bold">AI Score</div>
                   </div>
                 </div>
 
@@ -130,9 +130,9 @@ export default function CandidateList() {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                <div className="flex items-center justify-between pt-6 border-t border-[var(--color-border-primary)]">
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center text-slate-500 text-xs font-semibold tracking-wider">
+                    <div className="flex items-center text-[var(--color-text-muted)] text-xs font-semibold tracking-wider">
                       <Calendar className="w-3.5 h-3.5 mr-1.5" />
                       {candidate.testDate}
                     </div>
@@ -143,7 +143,7 @@ export default function CandidateList() {
                       {candidate.status.toUpperCase()}
                     </Badge>
                   </div>
-                  <Button variant="ghost" className="p-2 h-auto text-slate-400 hover:text-white">
+                  <Button variant="ghost" className="p-2 h-auto text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">
                     <ExternalLink className="w-4 h-4" />
                   </Button>
                 </div>
@@ -154,12 +154,12 @@ export default function CandidateList() {
       </div>
 
       {filteredCandidates.length === 0 && (
-        <Card className="py-20 text-center flex flex-col items-center border-dashed border-white/10">
-          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 text-slate-600">
+        <Card className="py-20 text-center flex flex-col items-center border-dashed border-[var(--color-border-primary)]">
+          <div className="w-20 h-20 bg-[var(--color-bg-tertiary)] rounded-full flex items-center justify-center mb-6 text-[var(--color-text-secondary)]">
             <Search className="w-10 h-10" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">No candidates matched</h3>
-          <p className="text-slate-400">Try adjusting your filters or search keywords.</p>
+          <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">No candidates matched</h3>
+          <p className="text-[var(--color-text-secondary)]">Try adjusting your filters or search keywords.</p>
         </Card>
       )}
     </div>

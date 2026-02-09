@@ -67,10 +67,10 @@ export default function Register() {
                   "p-4 rounded-xl border transition-all flex flex-col items-center gap-2 group",
                   formData.role === "candidate"
                     ? "bg-brand-violet/20 border-brand-violet text-white"
-                    : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"
+                    : "bg-[var(--color-bg-secondary)]/5 border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:border-[var(--color-border-primary)]/80"
                 )}
               >
-                <UserCircle2 className={cn("w-6 h-6", formData.role === "candidate" ? "text-brand-violet" : "text-slate-500")} />
+                <UserCircle2 className={cn("w-6 h-6", formData.role === "candidate" ? "text-brand-violet" : "text-[var(--color-text-secondary)]")} />
                 <span className="font-medium">Candidate</span>
               </button>
               <button
@@ -80,10 +80,10 @@ export default function Register() {
                   "p-4 rounded-xl border transition-all flex flex-col items-center gap-2 group",
                   formData.role === "recruiter"
                     ? "bg-brand-violet/20 border-brand-violet text-white"
-                    : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20"
+                    : "bg-[var(--color-bg-secondary)]/5 border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:border-[var(--color-border-primary)]/80"
                 )}
               >
-                <Building2 className={cn("w-6 h-6", formData.role === "recruiter" ? "text-brand-violet" : "text-slate-500")} />
+                <Building2 className={cn("w-6 h-6", formData.role === "recruiter" ? "text-brand-violet" : "text-[var(--color-text-secondary)]")} />
                 <span className="font-medium">Recruiter</span>
               </button>
             </div>

@@ -71,26 +71,27 @@ export default function Navbar() {
         </button>
       </div>
 
+  // ... inside mobile menu ...
       {/* Mobile Menu */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden absolute top-24 left-6 right-6 glass rounded-2xl p-6 flex flex-col space-y-4 border-white/10"
+          className="md:hidden absolute top-24 left-6 right-6 glass-card p-6 flex flex-col space-y-4"
         >
-          <Link to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Home</Link>
-          <Link to="/features" onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Features</Link>
+          <Link to="/" onClick={() => setIsOpen(false)} className="text-lg font-medium text-[var(--color-text-primary)] hover:text-brand-violet transition-colors">Home</Link>
+          <Link to="/features" onClick={() => setIsOpen(false)} className="text-lg font-medium text-[var(--color-text-primary)] hover:text-brand-violet transition-colors">Features</Link>
           {!isAuthenticated ? (
-            <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
-              <Link to="/login" onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Sign in</Link>
+            <div className="flex flex-col space-y-4 pt-4 border-t border-[var(--color-border-primary)]">
+              <Link to="/login" onClick={() => setIsOpen(false)} className="text-lg font-medium text-[var(--color-text-primary)] hover:text-brand-violet transition-colors">Sign in</Link>
               <Button variant="primary" className="w-full">
                 <Link to="/register" onClick={() => setIsOpen(false)}>Join Platform</Link>
               </Button>
             </div>
           ) : (
-            <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
-              <Link to={user?.role === 'recruiter' ? '/recruiter' : '/candidate'} onClick={() => setIsOpen(false)} className="text-lg font-medium text-white">Dashboard</Link>
-              <button onClick={handleLogout} className="flex items-center space-x-2 text-red-400">
+            <div className="flex flex-col space-y-4 pt-4 border-t border-[var(--color-border-primary)]">
+              <Link to={user?.role === 'recruiter' ? '/recruiter' : '/candidate'} onClick={() => setIsOpen(false)} className="text-lg font-medium text-[var(--color-text-primary)] hover:text-brand-violet transition-colors">Dashboard</Link>
+              <button onClick={handleLogout} className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors">
                 <LogOut className="w-5 h-5" />
                 <span>Logout</span>
               </button>

@@ -9,8 +9,8 @@ export const Button = ({
 }) => {
     const variants = {
         primary: "btn-primary",
-        secondary: "btn-secondary text-[var(--color-text-primary)]",
-        ghost: "bg-transparent hover:bg-[var(--color-text-primary)]/5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] px-4 py-2",
+        secondary: "btn-secondary",
+        ghost: "btn-ghost",
     };
 
     return (

@@ -78,17 +78,17 @@ export default function SkillTest() {
         >
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
-        <h2 className="text-3xl font-bold text-white mb-2">Assessment Completed</h2>
-        <p className="text-slate-400 mb-8">Your results have been processed by our AI and sent to the recruiter.</p>
+        <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">Assessment Completed</h2>
+        <p className="text-[var(--color-text-secondary)] mb-8">Your results have been processed by our AI and sent to the recruiter.</p>
 
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <div className="text-2xl font-bold text-white">{Object.keys(answers).length}</div>
-            <div className="text-xs text-slate-500 uppercase">Answered</div>
+          <div className="bg-[var(--color-bg-tertiary)] p-4 rounded-2xl border border-[var(--color-border-primary)]">
+            <div className="text-2xl font-bold text-[var(--color-text-primary)]">{Object.keys(answers).length}</div>
+            <div className="text-xs text-[var(--color-text-muted)] uppercase">Answered</div>
           </div>
-          <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <div className="text-2xl font-bold text-white">{questions.length}</div>
-            <div className="text-xs text-slate-500 uppercase">Total Items</div>
+          <div className="bg-[var(--color-bg-tertiary)] p-4 rounded-2xl border border-[var(--color-border-primary)]">
+            <div className="text-2xl font-bold text-[var(--color-text-primary)]">{questions.length}</div>
+            <div className="text-xs text-[var(--color-text-muted)] uppercase">Total Items</div>
           </div>
         </div>
 
@@ -107,22 +107,22 @@ export default function SkillTest() {
           <div className="w-16 h-16 bg-brand-violet/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-brand-violet">
             <Target className="w-8 h-8" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">React & Design Mastery</h2>
-          <p className="text-slate-400">Evaluate your skills in modern frontend development.</p>
+          <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">React & Design Mastery</h2>
+          <p className="text-[var(--color-text-secondary)]">Evaluate your skills in modern frontend development.</p>
         </header>
 
         <div className="grid md:grid-cols-2 gap-4 mb-10 text-sm">
           <div className="glass p-4 rounded-xl flex items-center gap-3">
             <Clock className="w-5 h-5 text-brand-cyan" />
-            <span className="text-slate-300">~15 Minutes</span>
+            <span className="text-[var(--color-text-secondary)]">~15 Minutes</span>
           </div>
           <div className="glass p-4 rounded-xl flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-brand-violet" />
-            <span className="text-slate-300">AI Adaptive Difficulty</span>
+            <span className="text-[var(--color-text-secondary)]">AI Adaptive Difficulty</span>
           </div>
           <div className="glass p-4 rounded-xl flex items-center gap-3">
-            <Info className="w-5 h-5 text-slate-400" />
-            <span className="text-slate-300">3 Core Questions</span>
+            <Info className="w-5 h-5 text-[var(--color-text-muted)]" />
+            <span className="text-[var(--color-text-secondary)]">3 Core Questions</span>
           </div>
         </div>
 
@@ -146,11 +146,11 @@ export default function SkillTest() {
             Step {currentQuestion + 1} of {questions.length}
           </div>
         </div>
-        <div className="text-xs text-slate-500 font-medium">Auto-saving progress...</div>
+        <div className="text-xs text-[var(--color-text-muted)] font-medium">Auto-saving progress...</div>
       </header>
 
       {/* Progress Bar */}
-      <div className="h-1.5 w-full bg-white/5 rounded-full mb-10 overflow-hidden">
+      <div className="h-1.5 w-full bg-[var(--color-bg-tertiary)] rounded-full mb-10 overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
@@ -166,7 +166,7 @@ export default function SkillTest() {
           exit={{ opacity: 0, x: -20 }}
           className="mb-8"
         >
-          <h3 className="text-2xl font-bold text-white mb-8 leading-relaxed">
+          <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-8 leading-relaxed">
             {question.question}
           </h3>
 
@@ -178,14 +178,14 @@ export default function SkillTest() {
                 className={cn(
                   "w-full text-left p-6 rounded-2xl border transition-all duration-300 group relative overflow-hidden",
                   selectedAnswer === index
-                    ? "bg-brand-violet/10 border-brand-violet text-white shadow-[0_0_15px_rgba(139,92,246,0.1)]"
-                    : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/8 hover:border-white/10"
+                    ? "bg-brand-violet/10 border-brand-violet text-[var(--color-text-primary)] shadow-[0_0_15px_rgba(139,92,246,0.1)]"
+                    : "bg-[var(--color-bg-tertiary)] border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-tertiary)]/80 hover:border-[var(--color-border-primary)]/80"
                 )}
               >
                 <div className="flex items-center gap-4 relative z-10">
                   <span className={cn(
                     "w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-colors",
-                    selectedAnswer === index ? "bg-brand-violet text-white" : "bg-white/5 text-slate-500 group-hover:text-slate-300"
+                    selectedAnswer === index ? "bg-brand-violet text-white" : "bg-[var(--color-bg-primary)] text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]"
                   )}>
                     {String.fromCharCode(65 + index)}
                   </span>
@@ -202,7 +202,7 @@ export default function SkillTest() {
         </motion.div>
       </AnimatePresence>
 
-      <footer className="mt-12 flex items-center justify-between border-t border-white/5 pt-8">
+      <footer className="mt-12 flex items-center justify-between border-t border-[var(--color-border-primary)] pt-8">
         <Button
           variant="ghost"
           onClick={handlePrevious}
