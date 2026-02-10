@@ -1,27 +1,23 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import path from "path";
-import sequelize from "./db.js";
+// Models (important for sync)
+import express from 'express';
+import cors from 'cors';
+import passport from 'passport';
+import path from 'path';
+import dotenv from 'dotenv';
+import sequelize from './db.js';
 
 // Routes
-import authRoutes from "./routes/auth.routes.js";
-import googleAuthRoutes from "./routes/googleAuth.routes.js";
-import jobRoutes from "./routes/job.routes.js";
-import applicationRoutes from "./routes/application.routes.js";
-import notificationRoutes from "./routes/notification.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
+import authRoutes from './routes/auth.routes.js';
+import googleAuthRoutes from './routes/googleAuth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import jobRoutes from './routes/job.routes.js';
+import applicationRoutes from './routes/application.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
-// Passport
-import passport from "./config/passport.js";
-
-// Models (important for sync)
 import User from "./models/User.js";
 import Application from "./models/Application.js";
 import AuditLog from "./models/AuditLog.js";
-import "./models/associations.js"; // Import associations
-
+import "./models/associations.js"; // Import associations once
 dotenv.config();
 
 const app = express();

@@ -35,14 +35,26 @@ export const getRecruiterApplications = async (req, res) => {
 
 export const applyJob = async (req, res) => {
     console.log("👉 applyJob controller hit!");
-    console.log("📦 Body:", req.body);
-    console.log("📂 File:", req.file);
-    console.log("👤 User:", req.user);
 
     try {
         const { jobId, coverNote } = req.body;
-
         const user = req.user;
+        const job = await Job.findByPk(jobId);
+
+        console.log("📦 Body:", req.body);
+        console.log("📂 File:", req.file);
+        console.log("👤 User:", user ? user.id : "No User");
+        console.log("JOB ID:", jobId);
+
+        // Normalize path (fix Windows backslashes)
+        const resumePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
+
+        if (job) {
+            console.log("JOB DATA:", job.toJSON());
+            console.log("JOB.createdBy:", job.createdBy);
+        } else {
+            console.log("JOB NOT FOUND for ID:", jobId);
+        }
 
         // 1️⃣ Role check
         if (user.role !== "candidate") {
@@ -52,10 +64,14 @@ export const applyJob = async (req, res) => {
         }
 
         // 2️⃣ Check job exists
-        const job = await Job.findByPk(jobId);
         if (!job) {
             return res.status(404).json({
                 message: "Job not found",
+            });
+        }
+        if (!job.createdBy) {
+            return res.status(500).json({
+                message: "Job recruiter mapping missing (createdBy is null)",
             });
         }
 
@@ -82,7 +98,7 @@ export const applyJob = async (req, res) => {
 
         // 5️⃣ Calculate AI score and feedback
         const { score, feedback } = await calculateAIScore({
-            resumePath: req.file.path,
+            resumePath: resumePath, // Use normalized path
             jobId,
         });
 
@@ -90,8 +106,8 @@ export const applyJob = async (req, res) => {
         const application = await Application.create({
             candidateId: user.id,
             jobId,
-            recruiterId: job.recruiterId,
-            resumeUrl: req.file.path,
+            recruiterId: job.createdBy,
+            resumeUrl: resumePath, // Use normalized path
             coverNote: coverNote || null,
             aiScore: score,
             aiFeedback: feedback,
@@ -100,7 +116,7 @@ export const applyJob = async (req, res) => {
 
         // 7️⃣ Notify Recruiter
         await Notification.create({
-            userId: job.recruiterId,
+            userId: job.createdBy, // Fixed: Use createdBy as userId
             message: `New application received for ${job.title} from ${user.name || "a candidate"}`,
             type: "APPLICATION",
             relatedId: application.id,
