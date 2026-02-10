@@ -71,7 +71,7 @@ export default function Navbar() {
         </button>
       </div>
 
-  // ... inside mobile menu ...
+
       {/* Mobile Menu */}
       {isOpen && (
         <motion.div
