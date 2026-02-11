@@ -38,6 +38,10 @@ const Application = sequelize.define(
         aiScore: {
             type: DataTypes.FLOAT,
             allowNull: true,
+            validate: {
+                min: 0,
+                max: 100
+            }
         },
 
         aiFeedback: {

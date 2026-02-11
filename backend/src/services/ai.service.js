@@ -1,28 +1,28 @@
-/**
- * Simulates an AI analysis of a resume.
- * In a real-world scenario, this would call an OpenAI/Gemini API.
- */
-export const calculateAIScore = async ({ resumePath, jobId }) => {
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+// backend/src/services/aiScore.service.js
 
-    // Generate a random score between 60 and 95
-    const score = Math.floor(Math.random() * (95 - 60 + 1)) + 60;
+export const calculateAIScore = ({ resumeText, job }) => {
+    let score = 0;
 
-    // Simulate extracting key skills and feedback
-    const feedback = {
-        strengths: [
-            "Strong relevant experience",
-            "Good educational background",
-            "Clear project descriptions",
-        ],
-        weaknesses: [
-            "Could improve quantifiable metrics in resume",
-            "Some skills listed are outdated",
-        ],
-        skills: ["React", "Node.js", "SQL", "Team Leadership", "Agile"],
-        summary: `Candidate shows strong promise with a match score of ${score}%. Recommended for interview.`,
-    };
+    // 🔹 Skill matching (basic keyword approach)
+    if (job.skills && resumeText) {
+        const skills = job.skills.toLowerCase().split(',');
+        const resume = resumeText.toLowerCase();
 
-    return { score, feedback };
+        const matched = skills.filter(skill =>
+            resume.includes(skill.trim())
+        );
+
+        score += Math.min(matched.length * 10, 50);
+    }
+
+    // 🔹 Experience weighting
+    if (resumeText.includes('intern')) score += 10;
+    if (resumeText.includes('engineer')) score += 15;
+
+    // 🔹 Education hints
+    if (resumeText.includes('bachelor')) score += 10;
+    if (resumeText.includes('master')) score += 15;
+
+    // Clamp score
+    return Math.min(score, 100);
 };

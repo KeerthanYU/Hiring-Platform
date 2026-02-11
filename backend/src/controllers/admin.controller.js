@@ -14,6 +14,37 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch users" });
     }
 };
+export const updateUserRole = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { role } = req.body;
+
+        const allowedRoles = ['admin', 'recruiter', 'candidate'];
+
+        if (!allowedRoles.includes(role)) {
+            return res.status(400).json({ message: 'Invalid role' });
+        }
+
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.role = role;
+        await user.save();
+
+        res.json({
+            message: 'Role updated successfully',
+            user: {
+                id: user.id,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update role' });
+    }
+};
 
 // Update user status (Suspend/Block/Activate)
 export const updateUserStatus = async (req, res) => {
@@ -87,7 +118,23 @@ export const getPlatformMetrics = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch metrics" });
     }
 };
+export const getAdminAnalytics = async (req, res) => {
+    try {
+        const [users, jobs, applications] = await Promise.all([
+            User.count(),
+            Job.count(),
+            Application.count()
+        ]);
 
+        res.json({
+            totalUsers: users,
+            totalJobs: jobs,
+            totalApplications: applications
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to load analytics' });
+    }
+};
 // View Audit Logs
 export const getAuditLogs = async (req, res) => {
     try {

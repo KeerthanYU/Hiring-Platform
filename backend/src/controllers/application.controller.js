@@ -4,6 +4,7 @@ import Job from "../models/Job.js";
 import User from "../models/User.js"; // Import User model
 import { calculateAIScore } from "../services/ai.service.js";
 import Notification from "../models/Notification.js";
+import fs from "fs";
 
 // Get all applications for a recruiter
 export const getRecruiterApplications = async (req, res) => {
@@ -23,7 +24,10 @@ export const getRecruiterApplications = async (req, res) => {
                     attributes: ["name", "email", "id"],
                 },
             ],
-            order: [["createdAt", "DESC"]],
+            order: [
+                ["createdAt", "DESC"],
+                ["aiScore", "DESC"],
+            ],
         });
 
         res.json(applications);
@@ -105,12 +109,17 @@ export const applyJob = async (req, res) => {
                 message: "Resume is required (PDF only)",
             });
         }
+        // Extract resume text (simple version)
+        const resumeText = req.file
+            ? fs.readFileSync(req.file.path, 'utf8')
+            : '';
 
-        // 5️⃣ Calculate AI score and feedback
-        const { score, feedback } = await calculateAIScore({
-            resumePath: resumePath, // Use normalized path
-            jobId,
+        // Calculate AI score
+        const aiScore = calculateAIScore({
+            resumeText,
+            job
         });
+
         const recruiterId = job.createdBy;
         // 6️⃣ Create application
         const application = await Application.create({
@@ -121,7 +130,7 @@ export const applyJob = async (req, res) => {
             coverNote: coverNote || null,
             aiScore: score,
             aiFeedback: feedback,
-            status: "APPLIED",
+            status: "PENDING",
         });
 
         // 7️⃣ Notify Recruiter
@@ -144,5 +153,47 @@ export const applyJob = async (req, res) => {
         return res.status(500).json({
             message: "Failed to apply for job",
         });
+    }
+};
+export const updateApplicationStatus = async (req, res) => {
+    try {
+        const { applicationId } = req.params;
+        const { status } = req.body;
+
+        const allowedStatuses = [
+            'pending',
+            'reviewed',
+            'shortlisted',
+            'rejected'
+        ];
+
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+
+        const application = await Application.findByPk(applicationId, {
+            include: {
+                model: Job
+            }
+        });
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        // Ensure recruiter owns the job
+        if (application.Job.recruiterId !== req.user.id) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        application.status = status;
+        await application.save();
+
+        res.json({
+            message: 'Status updated',
+            status: application.status
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update status' });
     }
 };
