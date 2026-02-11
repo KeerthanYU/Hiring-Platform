@@ -37,8 +37,18 @@ export const applyJob = async (req, res) => {
     console.log("👉 applyJob controller hit!");
 
     try {
+        const candidateId = req.user.id;
         const { jobId, coverNote } = req.body;
         const user = req.user;
+        const alreadyApplied = await Application.findOne({
+            where: { jobId, candidateId }
+        });
+
+        if (alreadyApplied) {
+            return res.status(400).json({
+                message: 'You have already applied for this job'
+            });
+        }
         const job = await Job.findByPk(jobId);
 
         console.log("📦 Body:", req.body);
@@ -101,7 +111,7 @@ export const applyJob = async (req, res) => {
             resumePath: resumePath, // Use normalized path
             jobId,
         });
-
+        const recruiterId = job.createdBy;
         // 6️⃣ Create application
         const application = await Application.create({
             candidateId: user.id,
@@ -124,7 +134,10 @@ export const applyJob = async (req, res) => {
 
         return res.status(201).json({
             message: "Application submitted successfully",
-            application,
+            application: {
+                id: application.id,
+                status: application.status
+            },
         });
     } catch (error) {
         console.error("Apply job error:", error);

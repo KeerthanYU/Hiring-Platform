@@ -71,7 +71,7 @@ app.use("/api/admin", adminRoutes);
 const PORT = process.env.PORT || 5002;
 
 sequelize
-    .sync() // ⚠️ DO NOT use alter:true with SQLite
+    .sync({ alter: false }) // ⚠️ DO NOT use alter:true with SQLite
     .then(() => {
         console.log("✅ Database synced");
         app.listen(PORT, () => {
