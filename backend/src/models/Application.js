@@ -57,7 +57,7 @@ const Application = sequelize.define(
                 "REJECTED",
                 "HIRED"
             ),
-            defaultValue: "PENDING",
+            defaultValue: "APPLIED",
         },
     },
     {

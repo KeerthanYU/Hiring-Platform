@@ -1,10 +1,17 @@
-// Models (important for sync)
+import dotenv from 'dotenv';
+dotenv.config(); // MUST be first, before any env var usage
+
 import express from 'express';
 import cors from 'cors';
 import passport from 'passport';
 import path from 'path';
-import dotenv from 'dotenv';
 import sequelize from './db.js';
+
+// Import passport strategy config (registers the Google OAuth strategy)
+import './config/passport.js';
+
+// Import models + associations
+import './models/associations.js';
 
 // Routes
 import authRoutes from './routes/auth.routes.js';
@@ -13,12 +20,7 @@ import userRoutes from './routes/user.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import applicationRoutes from './routes/application.routes.js';
 import adminRoutes from './routes/admin.routes.js';
-
-import User from "./models/User.js";
-import Application from "./models/Application.js";
-import AuditLog from "./models/AuditLog.js";
-import "./models/associations.js"; // Import associations once
-dotenv.config();
+import notificationRoutes from './routes/notification.routes.js';
 
 const app = express();
 
@@ -61,9 +63,10 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoutes);
 app.use("/api/jobs", jobRoutes);
-app.use("/api/applications", applicationRoutes); // ✅ ONLY ONCE
+app.use("/api/applications", applicationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // =======================
 // 🚀 Start Server

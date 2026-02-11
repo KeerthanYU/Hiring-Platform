@@ -1,10 +1,8 @@
 import Application from "../models/Application.js";
-
 import Job from "../models/Job.js";
-import User from "../models/User.js"; // Import User model
+import User from "../models/User.js";
 import { calculateAIScore } from "../services/ai.service.js";
 import Notification from "../models/Notification.js";
-import fs from "fs";
 
 // Get all applications for a recruiter
 export const getRecruiterApplications = async (req, res) => {
@@ -20,7 +18,7 @@ export const getRecruiterApplications = async (req, res) => {
                 },
                 {
                     model: User,
-                    as: "candidate", // Ensure this alias matches your association in db.js or models
+                    as: "candidate",
                     attributes: ["name", "email", "id"],
                 },
             ],
@@ -38,37 +36,10 @@ export const getRecruiterApplications = async (req, res) => {
 };
 
 export const applyJob = async (req, res) => {
-    console.log("👉 applyJob controller hit!");
-
     try {
         const candidateId = req.user.id;
         const { jobId, coverNote } = req.body;
         const user = req.user;
-        const alreadyApplied = await Application.findOne({
-            where: { jobId, candidateId }
-        });
-
-        if (alreadyApplied) {
-            return res.status(400).json({
-                message: 'You have already applied for this job'
-            });
-        }
-        const job = await Job.findByPk(jobId);
-
-        console.log("📦 Body:", req.body);
-        console.log("📂 File:", req.file);
-        console.log("👤 User:", user ? user.id : "No User");
-        console.log("JOB ID:", jobId);
-
-        // Normalize path (fix Windows backslashes)
-        const resumePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
-
-        if (job) {
-            console.log("JOB DATA:", job.toJSON());
-            console.log("JOB.createdBy:", job.createdBy);
-        } else {
-            console.log("JOB NOT FOUND for ID:", jobId);
-        }
 
         // 1️⃣ Role check
         if (user.role !== "candidate") {
@@ -78,11 +49,13 @@ export const applyJob = async (req, res) => {
         }
 
         // 2️⃣ Check job exists
+        const job = await Job.findByPk(jobId);
         if (!job) {
             return res.status(404).json({
                 message: "Job not found",
             });
         }
+
         if (!job.createdBy) {
             return res.status(500).json({
                 message: "Job recruiter mapping missing (createdBy is null)",
@@ -109,33 +82,34 @@ export const applyJob = async (req, res) => {
                 message: "Resume is required (PDF only)",
             });
         }
-        // Extract resume text (simple version)
-        const resumeText = req.file
-            ? fs.readFileSync(req.file.path, 'utf8')
-            : '';
 
-        // Calculate AI score
-        const aiScore = calculateAIScore({
-            resumeText,
+        // Normalize path (fix Windows backslashes)
+        const resumePath = req.file.path.replace(/\\/g, "/");
+
+        // 5️⃣ Calculate AI score
+        // Note: PDF binary cannot be read as UTF-8 text reliably.
+        // For a production app, use a PDF parser like pdf-parse.
+        // For now, we score based on job metadata only.
+        const { score: aiScore, feedback: aiFeedback } = calculateAIScore({
+            resumeText: '',
             job
         });
 
-        const recruiterId = job.createdBy;
         // 6️⃣ Create application
         const application = await Application.create({
             candidateId: user.id,
             jobId,
             recruiterId: job.createdBy,
-            resumeUrl: resumePath, // Use normalized path
+            resumeUrl: resumePath,
             coverNote: coverNote || null,
-            aiScore: score,
-            aiFeedback: feedback,
-            status: "PENDING",
+            aiScore,
+            aiFeedback,
+            status: "APPLIED",
         });
 
         // 7️⃣ Notify Recruiter
         await Notification.create({
-            userId: job.createdBy, // Fixed: Use createdBy as userId
+            userId: job.createdBy,
             message: `New application received for ${job.title} from ${user.name || "a candidate"}`,
             type: "APPLICATION",
             relatedId: application.id,
@@ -155,20 +129,22 @@ export const applyJob = async (req, res) => {
         });
     }
 };
+
 export const updateApplicationStatus = async (req, res) => {
     try {
         const { applicationId } = req.params;
         const { status } = req.body;
 
         const allowedStatuses = [
-            'pending',
-            'reviewed',
-            'shortlisted',
-            'rejected'
+            'APPLIED',
+            'REVIEWED',
+            'SHORTLISTED',
+            'REJECTED',
+            'HIRED'
         ];
 
         if (!allowedStatuses.includes(status)) {
-            return res.status(400).json({ message: 'Invalid status' });
+            return res.status(400).json({ message: 'Invalid status. Must be one of: ' + allowedStatuses.join(', ') });
         }
 
         const application = await Application.findByPk(applicationId, {
@@ -181,8 +157,8 @@ export const updateApplicationStatus = async (req, res) => {
             return res.status(404).json({ message: 'Application not found' });
         }
 
-        // Ensure recruiter owns the job
-        if (application.Job.recruiterId !== req.user.id) {
+        // Ensure recruiter owns the job (Job.createdBy, NOT Job.recruiterId)
+        if (application.Job.createdBy !== req.user.id) {
             return res.status(403).json({ message: 'Access denied' });
         }
 
@@ -194,6 +170,7 @@ export const updateApplicationStatus = async (req, res) => {
             status: application.status
         });
     } catch (error) {
+        console.error("Update application status error:", error);
         res.status(500).json({ message: 'Failed to update status' });
     }
 };

@@ -2,6 +2,7 @@ import User from "./User.js";
 import Job from "./Job.js";
 import Application from "./Application.js";
 import Notification from "./Notification.js";
+import AuditLog from "./AuditLog.js";
 
 // ==========================================
 // 1. User <-> Job (Recruiter posting jobs)
@@ -72,4 +73,17 @@ Notification.belongsTo(Application, {
     constraints: false,
 });
 
-export default { User, Job, Application, Notification };
+// ==========================================
+// 7. User <-> AuditLog (Admin actions)
+// ==========================================
+User.hasMany(AuditLog, {
+    foreignKey: "adminId",
+    as: "adminLogs"
+});
+AuditLog.belongsTo(User, {
+    foreignKey: "adminId",
+    as: "admin"
+});
+
+export default { User, Job, Application, Notification, AuditLog };
+
