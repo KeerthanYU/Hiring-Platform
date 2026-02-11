@@ -8,25 +8,27 @@ import {
   Code,
   Star,
   CheckCircle2,
-  X
+  X,
+  DollarSign,
+  Building2
 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Textarea } from "../ui/Textarea";
-import { cn } from "../../utils/cn";
+import api from "../common/api/axios";
 
 export default function JobForm() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    requiredSkills: "",
-    experience: "",
+    company: "",
     location: "",
-    type: "",
+    salary: "",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,21 +39,30 @@ export default function JobForm() {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
+    setError("");
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await api.post("/jobs", {
+        title: formData.title,
+        description: formData.description,
+        company: formData.company,
+        location: formData.location,
+        salary: formData.salary || null,
+      });
+
       setSuccess(true);
       setFormData({
         title: "",
         description: "",
-        requiredSkills: "",
-        experience: "",
+        company: "",
         location: "",
-        type: "",
+        salary: "",
       });
       setTimeout(() => setSuccess(false), 5000);
-    } catch (error) {
-      console.error("Error posting job:", error);
+    } catch (err) {
+      console.error("Error posting job:", err);
+      const message = err.response?.data?.message || err.response?.data?.error || "Failed to post job. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -85,6 +96,24 @@ export default function JobForm() {
               </div>
             </motion.div>
           )}
+
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-8"
+            >
+              <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-4 text-red-400">
+                <X className="w-6 h-6 flex-shrink-0" />
+                <div className="flex-1">
+                  <p className="font-bold">Error</p>
+                  <p className="text-sm opacity-80">{error}</p>
+                </div>
+                <button onClick={() => setError("")}><X className="w-4 h-4" /></button>
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
 
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -102,6 +131,17 @@ export default function JobForm() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">Company Name</label>
+              <Input
+                name="company"
+                required
+                icon={Building2}
+                placeholder="e.g. StarkTech AI"
+                value={formData.company}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-2">
               <label className="text-sm font-medium text-[var(--color-text-secondary)]">Location</label>
               <Input
                 name="location"
@@ -112,52 +152,15 @@ export default function JobForm() {
                 onChange={handleChange}
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--color-text-secondary)]">Job Type</label>
-              <select
-                name="type"
-                required
-                className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl py-2.5 px-4 text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-medium"
-                value={formData.type}
-                onChange={handleChange}
-              >
-                <option value="">Select Type</option>
-                <option value="full-time">Full-Time</option>
-                <option value="contract">Contract</option>
-                <option value="freelance">Freelance</option>
-              </select>
-            </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Experience Level</label>
-            <div className="relative">
-              <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
-              <select
-                name="experience"
-                required
-                className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl py-2.5 pl-10 pr-4 text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-medium appearance-none"
-                value={formData.experience}
-                onChange={handleChange}
-              >
-                <option value="">Select Level</option>
-                <option value="entry">Entry (0-2 years)</option>
-                <option value="mid">Mid (2-5 years)</option>
-                <option value="senior">Senior (5+ years)</option>
-                <option value="lead">Lead/Principal</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Required Skills</label>
-            <Textarea
-              name="requiredSkills"
-              required
-              icon={Code}
-              rows={2}
-              placeholder="React, Tailwind, TypeScript (comma separated)"
-              value={formData.requiredSkills}
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Salary Range (Optional)</label>
+            <Input
+              name="salary"
+              icon={DollarSign}
+              placeholder="e.g. $120k - $160k"
+              value={formData.salary}
               onChange={handleChange}
             />
           </div>
@@ -169,7 +172,7 @@ export default function JobForm() {
               required
               icon={FileText}
               rows={5}
-              placeholder="Tell us about the role..."
+              placeholder="Tell us about the role, responsibilities, and requirements..."
               value={formData.description}
               onChange={handleChange}
             />

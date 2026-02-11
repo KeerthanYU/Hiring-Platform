@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Search,
@@ -8,70 +8,68 @@ import {
     DollarSign,
     ArrowUpRight,
     Filter,
-    CheckCircle2
+    CheckCircle2,
+    Loader2
 } from "lucide-react";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { Input } from "../ui/Input";
 import ApplyJob from "./ApplyJob";
+import api from "../common/api/axios";
 
 export default function JobListings() {
     const [search, setSearch] = useState("");
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Mock data - in a real app this would come from an API
-    const jobs = [
-        {
-            id: 1,
-            title: "Senior Frontend Engineer",
-            company: "StarkTech AI",
-            location: "San Francisco / Remote",
-            salary: "$140k - $190k",
-            type: "Full-Time",
-            posted: "2 hours ago",
-            tags: ["React", "Tailwind", "System Design"],
-            level: "Senior"
-        },
-        {
-            id: 2,
-            title: "Full Stack Developer",
-            company: "Nexus Systems",
-            location: "New York / Remote",
-            salary: "$120k - $160k",
-            type: "Full-Time",
-            posted: "5 hours ago",
-            tags: ["Node.js", "TypeScript", "PostgreSQL"],
-            level: "Mid-Senior"
-        },
-        {
-            id: 3,
-            title: "UI/UX Designer",
-            company: "Flux Agency",
-            location: "London / Remote",
-            salary: "$90k - $130k",
-            type: "Contract",
-            posted: "1 day ago",
-            tags: ["Figma", "Design Systems", "Prototyping"],
-            level: "Senior"
-        },
-        {
-            id: 4,
-            title: "Backend Core Engineer",
-            company: "Quantum Labs",
-            location: "Remote",
-            salary: "$150k - $210k",
-            type: "Full-Time",
-            posted: "3 days ago",
-            tags: ["Go", "Kubernetes", "Redis"],
-            level: "Lead"
-        }
-    ];
+    // Fetch real jobs from the backend API
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                setLoading(true);
+                const response = await api.get("/jobs");
+                setJobs(response.data);
+                setError(null);
+            } catch (err) {
+                console.error("Failed to fetch jobs:", err);
+                setError("Failed to load job listings.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchJobs();
+    }, []);
 
     const filteredJobs = jobs.filter(job =>
-        job.title.toLowerCase().includes(search.toLowerCase()) ||
-        job.company.toLowerCase().includes(search.toLowerCase()) ||
-        job.tags.some(t => t.toLowerCase().includes(search.toLowerCase()))
+        (job.title || "").toLowerCase().includes(search.toLowerCase()) ||
+        (job.company || "").toLowerCase().includes(search.toLowerCase()) ||
+        (job.location || "").toLowerCase().includes(search.toLowerCase())
     );
+
+    if (loading) {
+        return (
+            <div className="py-20 text-center">
+                <Loader2 className="w-8 h-8 text-brand-violet mx-auto mb-4 animate-spin" />
+                <p className="text-[var(--color-text-secondary)]">Loading jobs...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="py-20 text-center">
+                <Briefcase className="w-16 h-16 text-red-400 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">Error</h3>
+                <p className="text-[var(--color-text-secondary)]">{error}</p>
+                <Button variant="secondary" className="mt-4" onClick={() => window.location.reload()}>
+                    Retry
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -79,7 +77,7 @@ export default function JobListings() {
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="w-full md:max-w-md">
                     <Input
-                        placeholder="Search jobs, companies, skills..."
+                        placeholder="Search jobs, companies, locations..."
                         icon={Search}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -109,44 +107,39 @@ export default function JobListings() {
                                     <div className="flex-1 space-y-4">
                                         <div className="flex items-start justify-between md:justify-start gap-4">
                                             <div className="w-14 h-14 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center text-slate-400 font-black text-xl group-hover:bg-brand-violet/10 group-hover:text-brand-violet transition-all">
-                                                {job.company[0]}
+                                                {(job.company || "?")[0]}
                                             </div>
                                             <div>
-                                                <h3 className="text-xl font-bold text-white group-hover:text-brand-violet transition-colors">
+                                                <h3 className="text-xl font-bold text-[var(--color-text-primary)] group-hover:text-brand-violet transition-colors">
                                                     {job.title}
                                                 </h3>
-                                                <p className="text-slate-400 font-medium">{job.company}</p>
+                                                <p className="text-[var(--color-text-secondary)] font-medium">{job.company}</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                                        <div className="flex flex-wrap gap-4 text-sm text-[var(--color-text-muted)]">
                                             <div className="flex items-center gap-1.5">
                                                 <MapPin className="w-4 h-4" />
                                                 {job.location}
                                             </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <DollarSign className="w-4 h-4" />
-                                                {job.salary}
-                                            </div>
+                                            {job.salary && (
+                                                <div className="flex items-center gap-1.5">
+                                                    <DollarSign className="w-4 h-4" />
+                                                    {job.salary}
+                                                </div>
+                                            )}
                                             <div className="flex items-center gap-1.5">
                                                 <Clock className="w-4 h-4" />
-                                                {job.posted}
+                                                {new Date(job.createdAt).toLocaleDateString()}
                                             </div>
-                                        </div>
-
-                                        <div className="flex flex-wrap gap-2">
-                                            <Badge variant="info">{job.type}</Badge>
-                                            {job.tags.map((tag, i) => (
-                                                <Badge key={i}>{tag}</Badge>
-                                            ))}
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto border-t md:border-t-0 md:border-l border-white/5 pt-6 md:pt-0 md:pl-8">
+                                    <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto border-t md:border-t-0 md:border-l border-[var(--color-border-primary)] pt-6 md:pt-0 md:pl-8">
                                         <ApplyJob
                                             jobId={job.id}
                                             jobTitle={job.title}
-                                            className="w-full group/btn flex items-center justify-center gap-2 bg-white text-brand-black font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors"
+                                            className="w-full group/btn flex items-center justify-center gap-2 bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] font-bold py-3 rounded-xl hover:opacity-90 transition-colors"
                                         >
                                             Quick Apply
                                             <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
@@ -160,11 +153,16 @@ export default function JobListings() {
                 </AnimatePresence>
             </div>
 
-            {filteredJobs.length === 0 && (
+            {filteredJobs.length === 0 && !loading && (
                 <div className="py-20 text-center">
-                    <Briefcase className="w-16 h-16 text-slate-700 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-2">No jobs found</h3>
-                    <p className="text-slate-400">Try broaden your search terms or filters.</p>
+                    <Briefcase className="w-16 h-16 text-[var(--color-text-muted)] mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">No jobs found</h3>
+                    <p className="text-[var(--color-text-secondary)]">
+                        {jobs.length === 0
+                            ? "No jobs have been posted yet. Check back later!"
+                            : "Try broadening your search terms or filters."
+                        }
+                    </p>
                 </div>
             )}
         </div>
