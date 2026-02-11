@@ -10,13 +10,13 @@ export default function AuthSuccess() {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
         const role = params.get("role");
+        const name = params.get("name");
 
         if (token) {
-            // Update context state with token and minimal user info
-            setAuth(token, { role });
+            // Update context state with token and full user info
+            setAuth(token, { role, name });
 
             // Use the generic /dashboard route for robust role-based redirection
-            // This ensures all auth-dependent components are ready
             setTimeout(() => {
                 navigate("/dashboard", { replace: true });
             }, 100);
