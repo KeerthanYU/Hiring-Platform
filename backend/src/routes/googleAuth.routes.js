@@ -21,6 +21,7 @@ router.get(
             {
                 id: req.user.id,
                 email: req.user.email,
+                name: req.user.name,
                 role: req.user.role
             },
             process.env.JWT_SECRET,
@@ -28,7 +29,7 @@ router.get(
         );
 
         res.redirect(
-            `${process.env.FRONTEND_URL}/auth/success?token=${token}&role=${req.user.role}`
+            `${process.env.FRONTEND_URL}/auth/success?token=${token}&role=${req.user.role}&name=${encodeURIComponent(req.user.name)}`
         );
     }
 );

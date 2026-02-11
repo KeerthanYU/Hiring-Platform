@@ -12,17 +12,25 @@ passport.use(
         async (accessToken, refreshToken, profile, done) => {
             try {
                 const email = profile.emails[0].value;
+                const ADMIN_EMAIL = "keerthanyu88@gmail.com";
+                const targetRole = email === ADMIN_EMAIL ? "admin" : "candidate";
 
                 let user = await User.findOne({ where: { email } });
 
-                // If user does not exist → create
                 if (!user) {
+                    // 1️⃣ Create new user with correct role
                     user = await User.create({
                         name: profile.displayName,
                         email,
                         provider: "google",
-                        role: "candidate", // default role
+                        role: targetRole,
                     });
+                } else {
+                    // 2️⃣ Ensure existing user has the correct role (Force Admin)
+                    if (user.role !== targetRole) {
+                        user.role = targetRole;
+                        await user.save();
+                    }
                 }
 
                 return done(null, user);
