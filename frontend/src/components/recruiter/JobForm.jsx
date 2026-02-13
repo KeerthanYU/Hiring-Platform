@@ -25,6 +25,7 @@ export default function JobForm() {
     company: "",
     location: "",
     salary: "",
+    skills: "",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -48,6 +49,7 @@ export default function JobForm() {
         company: formData.company,
         location: formData.location,
         salary: formData.salary || null,
+        skills: formData.skills,
       });
 
       setSuccess(true);
@@ -57,6 +59,7 @@ export default function JobForm() {
         company: "",
         location: "",
         salary: "",
+        skills: "",
       });
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
@@ -161,6 +164,17 @@ export default function JobForm() {
               icon={DollarSign}
               placeholder="e.g. $120k - $160k"
               value={formData.salary}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Required Skills (Comma separated)</label>
+            <Input
+              name="skills"
+              icon={Code}
+              placeholder="e.g. React, Node.js, TypeScript"
+              value={formData.skills}
               onChange={handleChange}
             />
           </div>
