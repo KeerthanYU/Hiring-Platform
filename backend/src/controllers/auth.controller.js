@@ -5,33 +5,34 @@ import User from "../models/User.js";
 // Register Controller
 export const register = async (req, res) => {
     try {
-        console.log("📝 Register attempt:", req.body.email);
-
         const { name, email, password, role } = req.body;
 
         if (!name || !email || !password) {
-            return res
-                .status(400)
-                .json({ message: "Name, email, and password are required" });
+            return res.status(400).json({ success: false, message: "Name, email, and password are required" });
         }
 
-        // Prevent privilege escalation
+        const normalizedEmail = email.toLowerCase();
+        console.log("📝 Register attempt for:", normalizedEmail);
+
+        const existingUser = await User.findOne({ where: { email: normalizedEmail } });
+        if (existingUser) {
+            console.warn("⚠️ Registration failed: User already exists -", normalizedEmail);
+            return res.status(400).json({ success: false, message: "User already exists" });
+        }
+
+        // Prevent unauthorized admin creation
         const allowedRoles = ["candidate", "recruiter"];
         const safeRole = allowedRoles.includes(role) ? role : "candidate";
 
-        const existingUser = await User.findOne({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
-
-        const hashed = await bcrypt.hash(password, 10);
-
+        // Password hashing handled by User model hooks
         const user = await User.create({
             name,
-            email,
-            password: hashed,
+            email: normalizedEmail,
+            password,
             role: safeRole,
         });
+
+        console.log("✅ User registered successfully:", normalizedEmail);
 
         res.status(201).json({
             success: true,
@@ -55,23 +56,23 @@ export const register = async (req, res) => {
 // Login Controller
 export const login = async (req, res) => {
     try {
-        console.log("🔑 Login attempt:", req.body.email);
-
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res
-                .status(400)
-                .json({ success: false, message: "Email and password required" });
+            return res.status(400).json({ success: false, message: "Email and password required" });
         }
 
-        const user = await User.findOne({ where: { email } });
+        const normalizedEmail = email.toLowerCase();
+        console.log("🔑 Login attempt for:", normalizedEmail);
 
-        // Handle OAuth users vs Local users
+        const user = await User.findOne({ where: { email: normalizedEmail } });
+
         if (!user) {
+            console.warn("⚠️ Login failed: User not found -", normalizedEmail);
             return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
 
+        // Handle OAuth users vs Local users
         if (user.provider === "google" && !user.password) {
             return res.status(401).json({
                 success: false,
@@ -79,27 +80,25 @@ export const login = async (req, res) => {
             });
         }
 
-        if (!(await bcrypt.compare(password, user.password))) {
-            return res
-                .status(401)
-                .json({ success: false, message: "Invalid credentials" });
+        // Use instance method for password comparison
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            console.warn("⚠️ Login failed: Password mismatch -", normalizedEmail);
+            return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
 
         if (user.accountStatus === 'suspended') {
-            return res
-                .status(403)
-                .json({ success: false, message: "Your account has been suspended. Please contact support." });
+            console.warn("⚠️ Login failed: Account suspended -", normalizedEmail);
+            return res.status(403).json({ success: false, message: "Your account has been suspended." });
         }
 
         const token = jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-                role: user.role,
-            },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
         );
+
+        console.log("✅ Login successful:", normalizedEmail);
 
         res.json({
             success: true,
@@ -131,11 +130,12 @@ export const me = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
         res.json({ success: true, user });
     } catch (err) {
-        res.status(500).json({ message: "Failed to fetch user" });
+        console.error("❌ Error fetching user info:", err);
+        res.status(500).json({ success: false, message: "Failed to fetch user" });
     }
 };
