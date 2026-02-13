@@ -36,9 +36,16 @@ export const createJob = async (req, res) => {
 
 export const getJobs = async (req, res) => {
     try {
-        const jobs = await Job.findAll({
+        const queryOptions = {
             order: [['createdAt', 'DESC']]
-        });
+        };
+
+        // If recruiter, only show their own jobs
+        if (req.user && req.user.role === 'recruiter') {
+            queryOptions.where = { createdBy: req.user.id };
+        }
+
+        const jobs = await Job.findAll(queryOptions);
         res.json(jobs);
     } catch (err) {
         res.status(500).json({ error: err.message });

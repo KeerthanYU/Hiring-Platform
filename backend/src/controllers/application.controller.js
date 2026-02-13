@@ -10,11 +10,11 @@ export const getRecruiterApplications = async (req, res) => {
         const recruiterId = req.user.id;
 
         const applications = await Application.findAll({
-            where: { recruiterId },
             include: [
                 {
                     model: Job,
-                    attributes: ["title", "company"],
+                    attributes: ["title", "company", "createdBy"],
+                    where: { createdBy: recruiterId }, // This is the CRITICAL fix
                 },
                 {
                     model: User,
@@ -66,7 +66,7 @@ export const applyJob = async (req, res) => {
         const existingApplication = await Application.findOne({
             where: {
                 jobId,
-                candidateId: user.id,
+                candidateId: candidateId,
             },
         });
 
@@ -87,9 +87,6 @@ export const applyJob = async (req, res) => {
         const resumePath = req.file.path.replace(/\\/g, "/");
 
         // 5️⃣ Calculate AI score
-        // Note: PDF binary cannot be read as UTF-8 text reliably.
-        // For a production app, use a PDF parser like pdf-parse.
-        // For now, we score based on job metadata only.
         const { score: aiScore, feedback: aiFeedback } = calculateAIScore({
             resumeText: '',
             job
@@ -97,9 +94,9 @@ export const applyJob = async (req, res) => {
 
         // 6️⃣ Create application
         const application = await Application.create({
-            candidateId: user.id,
+            candidateId: candidateId,
             jobId,
-            recruiterId: job.createdBy,
+            recruiterId: job.createdBy, // Correctly assign recruiterId
             resumeUrl: resumePath,
             coverNote: coverNote || null,
             aiScore,
