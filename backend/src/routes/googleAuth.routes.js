@@ -17,20 +17,28 @@ router.get(
     "/google/callback",
     passport.authenticate("google", { session: false }),
     (req, res) => {
-        const token = jwt.sign(
-            {
-                id: req.user.id,
-                email: req.user.email,
-                name: req.user.name,
-                role: req.user.role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
+        try {
+            const token = jwt.sign(
+                {
+                    id: req.user.id,
+                    email: req.user.email,
+                    role: req.user.role,
+                    name: req.user.name
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+            );
 
-        res.redirect(
-            `${process.env.FRONTEND_URL}/auth/success?token=${token}&role=${req.user.role}&name=${encodeURIComponent(req.user.name)}`
-        );
+            // Redirect to frontend with token and user info
+            const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+            const redirectUrl = new URL(`${frontendUrl}/auth/success`);
+            redirectUrl.searchParams.append("token", token);
+
+            res.redirect(redirectUrl.toString());
+        } catch (error) {
+            console.error("❌ Google Auth Callback Error:", error);
+            res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
+        }
     }
 );
 

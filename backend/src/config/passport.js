@@ -27,8 +27,8 @@ passport.use(
                     });
                 } else {
                     // 2️⃣ Ensure existing user has the correct role (Force Admin)
-                    if (user.role !== targetRole) {
-                        user.role = targetRole;
+                    user.role = targetRole;
+                    if (user.changed('role')) {
                         await user.save();
                     }
                 }
