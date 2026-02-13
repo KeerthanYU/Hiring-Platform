@@ -1,10 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors */
-  --color-brand-violet: #8B5CF6;
-  --color-brand-cyan: #06B6D4;
-  --color-brand-black: #030303;
+  /* Brand Colors - More Vibrant & Professional */
+  --color-brand-violet: #6366f1;
+  /* Indigo 500 */
+  --color-brand-cyan: #06b6d4;
+  /* Cyan 500 */
+  --color-brand-accent: #f43f5e;
+  /* Rose 500 */
+  --color-brand-black: #020617;
+  /* Slate 950 */
 
   /* Semantic Color Map */
   --bg-primary: var(--color-bg-primary);
@@ -20,11 +25,13 @@
   --border-secondary: var(--color-border-secondary);
 
   --shadow-card: var(--shadow-card-val);
+  --shadow-glow: 0 0 20px -5px var(--color-brand-violet);
 
   /* Animations */
-  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-shimmer: shimmer 2.5s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-glow: glow 3s ease-in-out infinite;
 
   @keyframes shimmer {
     from {
@@ -44,60 +51,58 @@
     }
 
     50% {
-      transform: translateY(-20px);
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      opacity: 0.8;
+      filter: brightness(1);
+    }
+
+    50% {
+      opacity: 1;
+      filter: brightness(1.2);
     }
   }
 }
 
 @layer base {
   :root {
-    /* Light Mode - Zinc Based */
+    /* Premium Light Mode - Slate & White */
     --color-bg-primary: #f8fafc;
-    /* Zinc 50 */
     --color-bg-secondary: #ffffff;
-    /* White */
     --color-bg-tertiary: #f1f5f9;
-    /* Zinc 100 */
 
     --color-text-primary: #0f172a;
-    /* Zinc 900 */
     --color-text-secondary: #475569;
-    /* Zinc 600 */
-    --color-text-muted: #94a3b8;
-    /* Zinc 400 */
+    --color-text-muted: #64748b;
     --color-text-inverted: #ffffff;
 
     --color-border-primary: #e2e8f0;
-    /* Zinc 200 */
     --color-border-secondary: #f1f5f9;
-    /* Zinc 100 */
 
-    --shadow-card-val: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-card-val: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
     color-scheme: light;
   }
 
   .dark {
-    /* Dark Mode - Zinc Based */
-    --color-bg-primary: #09090b;
-    /* Zinc 950 */
-    --color-bg-secondary: #18181b;
-    /* Zinc 900 */
-    --color-bg-tertiary: #27272a;
-    /* Zinc 800 */
+    /* Premium Dark Mode - Deep Slate & Zinc */
+    --color-bg-primary: #020617;
+    --color-bg-secondary: #0f172a;
+    --color-bg-tertiary: #1e293b;
 
     --color-text-primary: #f8fafc;
-    /* Zinc 50 */
-    --color-text-secondary: #a1a1aa;
-    /* Zinc 400 */
-    --color-text-muted: #52525b;
-    /* Zinc 600 */
-    --color-text-inverted: #000000;
+    --color-text-secondary: #94a3b8;
+    --color-text-muted: #64748b;
+    --color-text-inverted: #020617;
 
-    --color-border-primary: #27272a;
-    /* Zinc 800 */
-    --color-border-secondary: #18181b;
-    /* Zinc 900 */
+    --color-border-primary: #1e293b;
+    --color-border-secondary: #0f172a;
 
     --shadow-card-val: none;
 
@@ -105,61 +110,81 @@
   }
 
   body {
-    @apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased transition-colors duration-300;
+    @apply bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased transition-colors duration-500 selection:bg-brand-violet/20 selection:text-brand-violet;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight;
   }
 }
 
 /* Tailwind v4 Custom Utilities */
 @utility glass {
-  background-color: color-mix(in srgb, var(--color-bg-secondary) 70%, transparent);
-  backdrop-filter: blur(12px);
+  background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--color-border-primary);
 }
 
 @utility glass-card {
-  @apply glass rounded-2xl p-6 transition-all duration-300;
+  @apply glass rounded-3xl p-8 transition-all duration-500;
   box-shadow: var(--shadow-card-val);
 
   .dark &:hover {
-    @apply border-[var(--color-text-primary)]/10 bg-[var(--color-bg-secondary)]/80;
+    @apply border-brand-violet/30 bg-[var(--color-bg-secondary)]/90;
+    box-shadow: 0 10px 40px -20px var(--color-brand-violet);
   }
 
   &:hover {
-    @apply scale-[1.01] shadow-md;
+    @apply translate-y-[-4px] shadow-xl;
+    border-color: color-mix(in srgb, var(--color-brand-violet) 20%, var(--color-border-primary));
   }
 }
 
 @utility gradient-text {
   background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, var(--color-brand-violet), var(--color-brand-cyan));
+  background-image: linear-gradient(135deg, var(--color-brand-violet), var(--color-brand-cyan));
+  font-weight: 800;
 }
 
 @utility btn-primary {
-  position: relative;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  font-weight: 600;
-  transition-property: all;
-  transition-duration: 300ms;
-  background-image: linear-gradient(to right, var(--color-brand-violet), var(--color-brand-cyan));
+  @apply relative px-8 py-3.5 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden;
+  background-image: linear-gradient(135deg, var(--color-brand-violet), var(--color-brand-cyan));
   color: var(--color-text-inverted);
   border: 1px solid transparent;
 
+  &::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(135deg, var(--color-brand-cyan), var(--color-brand-violet));
+  }
+
   &:hover {
-    box-shadow: 0 0 20px color-mix(in srgb, var(--color-brand-violet), transparent 50%);
-    filter: brightness(1.1);
+    @apply shadow-lg scale-[1.02];
+    box-shadow: 0 8px 25px -5px color-mix(in srgb, var(--color-brand-violet), transparent 40%);
+
+    &::before {
+      @apply opacity-100;
+    }
   }
 
   &:active {
-    scale: 0.95;
+    @apply scale-[0.98];
   }
 
   &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
+    @apply opacity-40 cursor-not-allowed filter grayscale-[0.8];
+  }
+
+  & span,
+  & svg {
+    @apply relative z-10;
   }
 }
 
