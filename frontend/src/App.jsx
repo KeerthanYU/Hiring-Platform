@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -9,11 +10,11 @@ import CandidateDashboard from "./pages/CandidateDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import AdminDashboard from "./pages/AdminDashboard"; // 👈 ADD
 import AuthSuccess from "./pages/AuthSuccess";
-import Dashboard from "./pages/Dashboard";
 
 export default function App() {
   return (
     <>
+      <Toaster position="top-right" reverseOrder={false} />
       <Navbar />
 
       <Routes>
@@ -23,9 +24,6 @@ export default function App() {
 
         {/* Google OAuth Success */}
         <Route path="/auth/success" element={<AuthSuccess />} />
-
-        {/* Generic Dashboard Redirect */}
-        <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Dashboards (Protected) */}
         <Route

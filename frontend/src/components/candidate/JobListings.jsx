@@ -16,7 +16,7 @@ import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { Input } from "../ui/Input";
 import ApplyJob from "./ApplyJob";
-import api from "../common/api/axios";
+import api from "../../api/axios";
 
 export default function JobListings() {
     const [search, setSearch] = useState("");

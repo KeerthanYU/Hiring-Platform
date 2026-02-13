@@ -16,7 +16,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Textarea } from "../ui/Textarea";
-import api from "../common/api/axios";
+import api from "../../api/axios";
 
 export default function JobForm() {
   const [formData, setFormData] = useState({

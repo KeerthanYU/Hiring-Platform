@@ -1,5 +1,25 @@
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { updateApplicationStatus } from "../../services/applicationService";
-import { toast } from "react-hot-toast"; // Assuming toast is available or using simple alert if not
+import { fetchRecruiterApplications } from "./api/applications";
+import { toast } from "react-hot-toast";
+import {
+  Clock,
+  Search,
+  UserCheck,
+  XCircle,
+  CheckCircle2,
+  Filter,
+  SlidersHorizontal,
+  Building,
+  Calendar,
+  ExternalLink
+} from "lucide-react";
+import { Card } from "../ui/Card";
+import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
+import { AIScoreBar } from "./AIScoreBar";
+import { cn } from "../../utils/cn";
 
 export default function CandidateList() {
   const [candidates, setCandidates] = useState([]);
@@ -46,6 +66,7 @@ export default function CandidateList() {
       setErrorIds(prev => ({ ...prev, [applicationId]: null }));
 
       await updateApplicationStatus(applicationId, newStatus);
+      toast.success(`Candidate ${newStatus.toLowerCase()} successfully`);
 
       // Update local state for immediate feedback
       setCandidates(prev => prev.map(c =>

@@ -1,4 +1,4 @@
-import api from "../../common/api/axios";
+import api from "../../../api/axios";
 
 export const applyJob = async (jobId, resumeFile) => {
     console.log("📡 API applyJob calling...", { jobId, resumeFile });

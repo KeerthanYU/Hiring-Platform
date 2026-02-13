@@ -1,4 +1,4 @@
-import api from "../../common/api/axios";
+import api from "../../../api/axios";
 
 // Fetch applications for the logged-in recruiter
 export const fetchRecruiterApplications = async () => {

@@ -1,4 +1,4 @@
-import api from "../api/axios";
+import api from "../../../api/axios"; // Centralized instance
 
 // Fetch unread notifications
 export const fetchNotifications = async () => {
@@ -6,6 +6,7 @@ export const fetchNotifications = async () => {
         const response = await api.get("/notifications");
         return response.data;
     } catch (error) {
+        console.error("Fetch notifications failed:", error);
         throw error;
     }
 };
