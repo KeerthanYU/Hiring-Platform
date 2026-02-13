@@ -3,7 +3,7 @@ import User from "../models/User.js";
 
 export const createJob = async (req, res) => {
     try {
-        const { title, description, company, location, salary } = req.body;
+        const { title, description, company, location, salary, skills } = req.body;
 
         // Fetch full user from DB to check isVerifiedRecruiter
         // (req.user only has JWT payload: id, email, role)
@@ -23,6 +23,7 @@ export const createJob = async (req, res) => {
             company,
             location,
             salary,
+            skills,
             createdBy: req.user.id
         });
 

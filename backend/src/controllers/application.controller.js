@@ -1,7 +1,7 @@
 import Application from "../models/Application.js";
 import Job from "../models/Job.js";
 import User from "../models/User.js";
-import { calculateAIScore } from "../services/ai.service.js";
+import { calculateAIScore } from "../services/aiScore.service.js";
 import Notification from "../models/Notification.js";
 
 // Get all applications for a recruiter
@@ -23,8 +23,8 @@ export const getRecruiterApplications = async (req, res) => {
                 },
             ],
             order: [
-                ["createdAt", "DESC"],
                 ["aiScore", "DESC"],
+                ["createdAt", "DESC"],
             ],
         });
 
@@ -87,10 +87,21 @@ export const applyJob = async (req, res) => {
         const resumePath = req.file.path.replace(/\\/g, "/");
 
         // 5️⃣ Calculate AI score
-        const { score: aiScore, feedback: aiFeedback } = calculateAIScore({
-            resumeText: '',
-            job
-        });
+        let aiScore = 0;
+        let aiReason = "AI analysis failed during processing.";
+
+        try {
+            // In a real app, we'd extract text from the PDF. 
+            // For now, we simulate based on filename + cover note keywords for demonstration.
+            const { score, reasons } = calculateAIScore({
+                resumeText: (req.file.originalname || "") + " " + (coverNote || ""),
+                job
+            });
+            aiScore = score;
+            aiReason = reasons.join(" | ");
+        } catch (scoreErr) {
+            console.error("AI Scoring failed, proceeding with default score:", scoreErr);
+        }
 
         // 6️⃣ Create application
         const application = await Application.create({
@@ -100,7 +111,7 @@ export const applyJob = async (req, res) => {
             resumeUrl: resumePath,
             coverNote: coverNote || null,
             aiScore,
-            aiFeedback,
+            aiReason,
             status: "APPLIED",
         });
 

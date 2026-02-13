@@ -44,6 +44,11 @@ const Application = sequelize.define(
             }
         },
 
+        aiReason: {
+            type: DataTypes.TEXT, // Explanation of the score
+            allowNull: true,
+        },
+
         aiFeedback: {
             type: DataTypes.JSON, // Stores { strengths: [], weaknesses: [], skills: [] }
             allowNull: true,

@@ -21,6 +21,10 @@ const Job = sequelize.define('Job', {
     salary: {
         type: DataTypes.STRING,
     },
+    skills: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
     createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
