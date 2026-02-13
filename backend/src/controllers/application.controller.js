@@ -157,7 +157,8 @@ export const updateApplicationStatus = async (req, res) => {
 
         const application = await Application.findByPk(applicationId, {
             include: {
-                model: Job
+                model: Job,
+                as: "job"
             }
         });
 
@@ -165,8 +166,8 @@ export const updateApplicationStatus = async (req, res) => {
             return res.status(404).json({ message: 'Application not found' });
         }
 
-        // Ensure recruiter owns the job (Job.createdBy, NOT Job.recruiterId)
-        if (application.Job.createdBy !== req.user.id) {
+        // Ensure recruiter owns the job (Job.createdBy)
+        if (application.job.createdBy !== req.user.id) {
             return res.status(403).json({ message: 'Access denied' });
         }
 

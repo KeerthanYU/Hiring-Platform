@@ -47,7 +47,7 @@ export default function CandidateList() {
         testDate: new Date(app.createdAt).toLocaleDateString(),
         avatar: (app.candidate?.name || "U").charAt(0).toUpperCase(),
         feedback: app.aiFeedback,
-        jobTitle: app.Job?.title || "Unknown Position",
+        jobTitle: app.job?.title || "Unknown Position",
         resumeUrl: app.resumeUrl // Ensure this is mapped for the ExternalLink
       }));
       setCandidates(mappedCandidates);
