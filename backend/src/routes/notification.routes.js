@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get("/", auth, getNotifications);
 router.patch("/:id/read", auth, markAsRead);
+router.put("/:id/read", auth, markAsRead); // Support both PATCH and PUT
 
 export default router;

@@ -35,6 +35,39 @@ export const getRecruiterApplications = async (req, res) => {
     }
 };
 
+// Get all applications for a candidate
+export const getCandidateApplications = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
+
+        const candidateId = req.user.id;
+
+        const applications = await Application.findAll({
+            where: { candidateId },
+            include: [
+                {
+                    model: Job,
+                    as: "job",
+                    attributes: ["id", "title", "company", "location"],
+                },
+            ],
+            order: [
+                ["createdAt", "DESC"],
+            ],
+        });
+
+        res.json(applications || []);
+    } catch (error) {
+        console.error("❌ Get candidate applications error:", {
+            message: error.message,
+            userId: req.user?.id
+        });
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 export const applyJob = async (req, res) => {
     try {
         const candidateId = req.user.id;
