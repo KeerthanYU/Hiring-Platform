@@ -33,7 +33,7 @@ Application.belongsTo(User, {
 // ==========================================
 User.hasMany(Application, {
     foreignKey: "recruiterId",
-    as: "recruiterApplications"
+    as: "receivedApplications"
 });
 Application.belongsTo(User, {
     foreignKey: "recruiterId",
@@ -44,10 +44,12 @@ Application.belongsTo(User, {
 // 4. Job <-> Application
 // ==========================================
 Job.hasMany(Application, {
-    foreignKey: "jobId"
+    foreignKey: "jobId",
+    as: "applications"
 });
 Application.belongsTo(Job, {
-    foreignKey: "jobId"
+    foreignKey: "jobId",
+    as: "job"
 });
 
 // ==========================================

@@ -10,11 +10,12 @@ export const getRecruiterApplications = async (req, res) => {
         const recruiterId = req.user.id;
 
         const applications = await Application.findAll({
+            where: { recruiterId },
             include: [
                 {
                     model: Job,
-                    attributes: ["title", "company", "createdBy"],
-                    where: { createdBy: recruiterId }, // This is the CRITICAL fix
+                    as: "job",
+                    attributes: ["title", "company"],
                 },
                 {
                     model: User,
@@ -23,7 +24,6 @@ export const getRecruiterApplications = async (req, res) => {
                 },
             ],
             order: [
-                ["aiScore", "DESC"],
                 ["createdAt", "DESC"],
             ],
         });
@@ -107,7 +107,7 @@ export const applyJob = async (req, res) => {
         const application = await Application.create({
             candidateId: candidateId,
             jobId,
-            recruiterId: job.createdBy, // Correctly assign recruiterId
+            recruiterId: job.createdBy, // Correctly assign recruiterId using job.createdBy
             resumeUrl: resumePath,
             coverNote: coverNote || null,
             aiScore,
