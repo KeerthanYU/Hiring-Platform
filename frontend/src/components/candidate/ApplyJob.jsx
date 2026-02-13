@@ -12,10 +12,16 @@ export default function ApplyJob({ jobId, jobTitle = "this job", className = "",
         console.log("🔄 ApplyJob component: handleApply called", { jobId, resumeFile });
         try {
             setLoading(true);
-            await applyJob(jobId, resumeFile);
-            setHasApplied(true);
-            setIsModalOpen(false);
-            // alert("Application submitted successfully! Our AI is reviewing your resume."); // Removed alert for smoother UX
+            const response = await applyJob(jobId, resumeFile);
+
+            // The applyJob service function likely returns the response data
+            if (response) {
+                setHasApplied(true);
+                // Delay closing modal slightly if needed, but the current logic closes it immediately
+                setTimeout(() => {
+                    setIsModalOpen(false);
+                }, 1000);
+            }
         } catch (err) {
             console.error("Apply failed:", err);
             alert(err.response?.data?.message || err.message || "Apply failed");
