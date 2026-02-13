@@ -174,6 +174,14 @@ export const updateApplicationStatus = async (req, res) => {
         application.status = status;
         await application.save();
 
+        // Trigger notification for the candidate
+        await Notification.create({
+            userId: application.candidateId,
+            message: `Your application for ${application.job.title} has been ${status.toLowerCase()}`,
+            type: "APPLICATION",
+            relatedId: application.id,
+        });
+
         res.json({
             message: 'Status updated',
             status: application.status

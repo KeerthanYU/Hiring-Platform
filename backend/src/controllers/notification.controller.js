@@ -1,11 +1,11 @@
 import Notification from "../models/Notification.js";
 
-// Get unread notifications for a user
+// Get all notifications for a user (newest first)
 export const getNotifications = async (req, res) => {
     try {
         const userId = req.user.id;
         const notifications = await Notification.findAll({
-            where: { userId, isRead: false },
+            where: { userId },
             order: [["createdAt", "DESC"]],
         });
         res.json(notifications);
