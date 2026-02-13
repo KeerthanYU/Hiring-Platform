@@ -67,12 +67,13 @@ export function AuthProvider({ children }) {
 
   // Helper to set auth state from external sources (like Google OAuth)
   const setAuth = (newToken, newUser) => {
-    setToken(newToken);
+    console.log("🔐 Setting Auth state...");
     localStorage.setItem("token", newToken);
     if (newUser) {
-      setUser(newUser);
       localStorage.setItem("user", JSON.stringify(newUser));
+      setUser(newUser);
     }
+    setToken(newToken);
     setIsAuthenticated(true);
   };
 

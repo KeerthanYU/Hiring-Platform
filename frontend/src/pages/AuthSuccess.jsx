@@ -9,19 +9,31 @@ export default function AuthSuccess() {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
-        const role = params.get("role");
-        const name = params.get("name");
 
         if (token) {
-            // Update context state with token and full user info
-            setAuth(token, { role, name });
+            try {
+                // Decode JWT to get role and name (simple base64 decode of payload)
+                const payloadBase64 = token.split(".")[1];
+                const payload = JSON.parse(atob(payloadBase64));
+                const { role, name } = payload;
 
-            // Use the generic /dashboard route for robust role-based redirection
-            setTimeout(() => {
-                navigate("/dashboard", { replace: true });
-            }, 100);
+                console.log("✅ OAuth Success. User:", name, "Role:", role);
+
+                // Update context state with token and decoded user info
+                setAuth(token, { role, name });
+
+                // Redirect based on role
+                const redirectPath = role === "admin" ? "/admin" : (role === "recruiter" ? "/recruiter" : "/candidate");
+
+                setTimeout(() => {
+                    navigate(redirectPath, { replace: true });
+                }, 100);
+            } catch (err) {
+                console.error("❌ Failed to decode OAuth token:", err);
+                navigate("/login?error=invalid_token", { replace: true });
+            }
         } else {
-            console.error("AuthSuccess: No token found in URL");
+            console.error("❌ AuthSuccess: No token found in URL");
             navigate("/login", { replace: true });
         }
     }, [navigate, setAuth]);
