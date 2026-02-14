@@ -29,6 +29,7 @@ import jobRoutes from './routes/job.routes.js';
 import applicationRoutes from './routes/application.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
+import jobMatchRoutes from './routes/jobMatch.routes.js';
 console.log("📦 All routes imported");
 
 const app = express();
@@ -76,6 +77,7 @@ app.use("/api/applications", applicationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/job-match", jobMatchRoutes);
 
 // =======================
 // 🚀 Start Server

@@ -37,6 +37,10 @@ const Job = sequelize.define('Job', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    status: {
+        type: DataTypes.ENUM('active', 'inactive'),
+        defaultValue: 'active',
+    },
     createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
