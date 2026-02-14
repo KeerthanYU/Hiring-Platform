@@ -46,7 +46,7 @@ export default function CandidateList() {
         email: app.candidate?.email || "No direct contact",
         score: app.aiScore || 0,
         aiReason: app.aiReason || "Awaiting AI deeper analysis.",
-        status: (app.status || "APPLIED").toUpperCase(),
+        status: (app.status || "pending").toUpperCase(),
         testDate: new Date(app.createdAt).toLocaleDateString(),
         avatar: (app.candidate?.name || "U").charAt(0).toUpperCase(),
         feedback: app.aiFeedback,
@@ -104,14 +104,12 @@ export default function CandidateList() {
 
   const getStatusConfig = (status) => {
     const map = {
-      APPLIED: { icon: Clock, color: "text-blue-400", bg: "bg-blue-400/10", label: "PENDING" },
-      REVIEWED: { icon: Search, color: "text-amber-400", bg: "bg-amber-400/10", label: "REVIEWING" },
+      PENDING: { icon: Clock, color: "text-blue-400", bg: "bg-blue-400/10", label: "PENDING" },
       SHORTLISTED: { icon: Target, color: "text-brand-violet", bg: "bg-brand-violet/10", label: "SELECTED" },
       REJECTED: { icon: XCircle, color: "text-rose-500", bg: "bg-rose-500/10", label: "REJECTED" },
-      ACCEPTED: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10", label: "HIRED" },
       HIRED: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10", label: "HIRED" },
     };
-    return map[status] || map.APPLIED;
+    return map[status] || map.PENDING;
   };
 
   if (loading && candidates.length === 0) {
@@ -175,7 +173,7 @@ export default function CandidateList() {
         <AnimatePresence mode="popLayout">
           {filteredCandidates.map((candidate, index) => {
             const statusCfg = getStatusConfig(candidate.status);
-            const isFinalStatus = ["ACCEPTED", "REJECTED", "HIRED"].includes(candidate.status);
+            const isFinalStatus = ["HIRED", "REJECTED"].includes(candidate.status);
             const isExpanded = expandedId === candidate.id;
 
             return (
@@ -288,11 +286,11 @@ export default function CandidateList() {
                           {candidate.status === "SHORTLISTED" ? "Shortlisted" : "Shortlist"}
                         </button>
                         <button
-                          onClick={() => handleStatusUpdate(candidate.id, 'ACCEPTED')}
+                          onClick={() => handleStatusUpdate(candidate.id, 'HIRED')}
                           disabled={updatingId === candidate.id || isFinalStatus}
                           className="flex-1 h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-sm"
                         >
-                          Hire
+                          {candidate.status === "HIRED" ? "Hired" : "Hire"}
                         </button>
                         <button
                           onClick={() => handleStatusUpdate(candidate.id, 'REJECTED')}

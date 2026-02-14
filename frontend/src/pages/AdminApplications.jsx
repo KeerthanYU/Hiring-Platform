@@ -125,7 +125,7 @@ export default function AdminApplications() {
                             <option value="applied">Applied</option>
                             <option value="reviewed">Reviewed</option>
                             <option value="shortlisted">Shortlisted</option>
-                            <option value="accepted">Accepted</option>
+                            <option value="hired">Hired</option>
                             <option value="rejected">Rejected</option>
                         </select>
                     </div>
@@ -199,7 +199,10 @@ export default function AdminApplications() {
                                                 variant="secondary"
                                                 size="sm"
                                                 icon={ExternalLink}
-                                                onClick={() => window.open(app.resumeUrl, "_blank")}
+                                                onClick={() => {
+                                                    const baseUrl = API_BASE_URL.replace("/api", "");
+                                                    window.open(baseUrl + app.resumeUrl, "_blank");
+                                                }}
                                             >
                                                 Resume
                                             </Button>

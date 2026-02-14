@@ -26,6 +26,9 @@ export default function JobForm() {
     location: "",
     salary: "",
     skills: "",
+    requirements: "",
+    experience: "",
+    jobType: "Full-time",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -50,6 +53,9 @@ export default function JobForm() {
         location: formData.location,
         salary: formData.salary || null,
         skills: formData.skills,
+        requirements: formData.requirements,
+        experience: formData.experience,
+        jobType: formData.jobType,
       });
 
       setSuccess(true);
@@ -60,6 +66,9 @@ export default function JobForm() {
         location: "",
         salary: "",
         skills: "",
+        requirements: "",
+        experience: "",
+        jobType: "Full-time",
       });
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
@@ -157,6 +166,34 @@ export default function JobForm() {
             </div>
           </div>
 
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">Experience Level</label>
+              <Input
+                name="experience"
+                icon={Star}
+                placeholder="e.g. 3-5 Years / Senior"
+                value={formData.experience}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--color-text-secondary)]">Job Type</label>
+              <select
+                name="jobType"
+                className="w-full bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl px-4 h-12 text-sm text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-brand-violet/50 transition-all font-bold"
+                value={formData.jobType}
+                onChange={handleChange}
+              >
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+                <option value="Freelance">Freelance</option>
+                <option value="Internship">Internship</option>
+              </select>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-[var(--color-text-secondary)]">Salary Range (Optional)</label>
             <Input
@@ -175,6 +212,18 @@ export default function JobForm() {
               icon={Code}
               placeholder="e.g. React, Node.js, TypeScript"
               value={formData.skills}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-[var(--color-text-secondary)]">Minimum Requirements (One per line)</label>
+            <Textarea
+              name="requirements"
+              icon={CheckCircle2}
+              rows={3}
+              placeholder="e.g. Bachelor's in CS&#10;Experience with AWS&#10;Strong communication"
+              value={formData.requirements}
               onChange={handleChange}
             />
           </div>

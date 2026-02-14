@@ -17,6 +17,7 @@ import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { Input } from "../ui/Input";
 import ApplyJob from "./ApplyJob";
+import JobDetailsModal from "./JobDetailsModal"; // 👈 ADD
 import api from "../../api/axios";
 import { fetchCandidateApplications } from "./api/applications";
 import useAuth from "../../hooks/useAuth";
@@ -29,6 +30,8 @@ export default function JobListings() {
     const [candidateApplications, setCandidateApplications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedJobId, setSelectedJobId] = useState(null); // 👈 ADD
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false); // 👈 ADD
 
     // Fetch real jobs and candidate applications
     useEffect(() => {
@@ -211,7 +214,16 @@ export default function JobListings() {
                                                     <span>Quick Apply</span>
                                                     <ArrowUpRight className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                                                 </ApplyJob>
-                                                <Button variant="secondary" className="w-full h-14 bg-white/5 hover:bg-white/10 border-white/5 text-sm">View Details</Button>
+                                                <Button
+                                                    variant="secondary"
+                                                    className="w-full h-14 bg-white/5 hover:bg-white/10 border-white/5 text-sm"
+                                                    onClick={() => {
+                                                        setSelectedJobId(job.id);
+                                                        setIsDetailsOpen(true);
+                                                    }}
+                                                >
+                                                    View Details
+                                                </Button>
                                             </>
                                         )}
                                     </div>
@@ -221,6 +233,12 @@ export default function JobListings() {
                     ))}
                 </AnimatePresence>
             </div>
+
+            <JobDetailsModal
+                isOpen={isDetailsOpen}
+                onClose={() => setIsDetailsOpen(false)}
+                jobId={selectedJobId}
+            />
 
             {filteredJobs.length === 0 && !loading && (
                 <div className="py-32 text-center max-w-md mx-auto animate-fade-in">
