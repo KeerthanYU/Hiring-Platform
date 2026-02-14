@@ -73,7 +73,7 @@ export default function CandidateDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)] pt-28 pb-12 px-6 transition-colors duration-300">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] pt-32 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">

@@ -69,7 +69,8 @@ export default function AdminApplications() {
             HIRED: { color: "text-emerald-500", bg: "bg-emerald-500/10", icon: CheckCircle2 },
         };
 
-        const config = statusMap[status] || statusMap.APPLIED;
+        const s = (status || "").toUpperCase();
+        const config = statusMap[s] || statusMap.APPLIED;
         const Icon = config.icon;
 
         return (
@@ -81,26 +82,30 @@ export default function AdminApplications() {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-bg-primary)] p-8">
-            <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
+        <div className="min-h-screen bg-[var(--color-bg-primary)] pt-32 p-8 md:p-12">
+            <div className="max-w-7xl mx-auto space-y-12 animate-fade-in">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 className="text-4xl font-black text-[var(--color-text-primary)] tracking-tighter uppercase">
-                            System Applications
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-[var(--color-border-primary)] pb-12">
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-violet/10 text-brand-violet text-[10px] font-black uppercase tracking-widest">
+                            <ShieldCheck className="w-3 h-3" />
+                            Admin Console
+                        </div>
+                        <h1 className="text-5xl font-black text-[var(--color-text-primary)] tracking-tighter uppercase leading-none">
+                            System <span className="text-brand-violet">Applications</span>
                         </h1>
-                        <p className="text-[var(--color-text-secondary)] font-medium mt-1">
-                            Global visibility into all candidate submissions
+                        <p className="text-[var(--color-text-secondary)] font-medium max-w-xl text-lg">
+                            Global visibility into all candidate submissions across the entire SkillTestAI ecosystem.
                         </p>
                     </div>
-                    <div className="flex gap-4 p-1 bg-[var(--color-bg-tertiary)] rounded-2xl border border-[var(--color-border-primary)] shadow-xl">
-                        <div className="px-6 py-3 border-r border-[var(--color-border-primary)]">
-                            <p className="text-[10px] text-[var(--color-text-muted)] font-black uppercase tracking-widest mb-1">Total</p>
-                            <p className="text-2xl font-black text-brand-violet">{applications.length}</p>
+                    <div className="flex gap-1 p-1 bg-[var(--color-bg-tertiary)] rounded-3xl border border-[var(--color-border-primary)] shadow-2xl backdrop-blur-xl">
+                        <div className="px-10 py-5 border-r border-[var(--color-border-primary)]">
+                            <p className="text-[10px] text-[var(--color-text-muted)] font-black uppercase tracking-widest mb-1">Total Base</p>
+                            <p className="text-4xl font-black text-brand-violet tracking-tighter">{applications.length}</p>
                         </div>
-                        <div className="px-6 py-3">
-                            <p className="text-[10px] text-[var(--color-text-muted)] font-black uppercase tracking-widest mb-1">Filtered</p>
-                            <p className="text-2xl font-black text-brand-cyan">{filteredApps.length}</p>
+                        <div className="px-10 py-5">
+                            <p className="text-[10px] text-[var(--color-text-muted)] font-black uppercase tracking-widest mb-1">Active View</p>
+                            <p className="text-4xl font-black text-brand-cyan tracking-tighter">{filteredApps.length}</p>
                         </div>
                     </div>
                 </div>

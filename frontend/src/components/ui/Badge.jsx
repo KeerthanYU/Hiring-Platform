@@ -7,6 +7,7 @@ export const Badge = ({ children, variant = "default", className }) => {
         success: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
         info: "bg-brand-cyan/15 text-brand-cyan border-brand-cyan/30",
         warning: "bg-amber-500/15 text-amber-500 border-amber-500/30",
+        orange: "bg-orange-500/15 text-orange-500 border-orange-500/30",
         error: "bg-rose-500/15 text-rose-500 border-rose-500/30",
     };
 

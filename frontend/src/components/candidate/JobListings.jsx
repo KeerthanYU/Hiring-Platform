@@ -62,13 +62,15 @@ export default function JobListings() {
     };
 
     const getStatusStyle = (status) => {
-        switch (status) {
-            case "APPLIED": return "warning";
+        const s = (status || "").toUpperCase();
+        switch (s) {
+            case "APPLIED":
+            case "PENDING": return "warning"; // Yellow
             case "REVIEWED": return "info";
-            case "SHORTLISTED": return "primary";
+            case "SHORTLISTED": return "orange"; // Orange
             case "ACCEPTED":
-            case "HIRED": return "success";
-            case "REJECTED": return "error";
+            case "HIRED": return "success"; // Green
+            case "REJECTED": return "error"; // Red
             default: return "default";
         }
     };
@@ -193,7 +195,7 @@ export default function JobListings() {
                                                         ) : (
                                                             <Clock className="w-4 h-4 animate-pulse-slow" />
                                                         )}
-                                                        <span className="text-xs">{getApplicationForJob(job.id).status === 'APPLIED' ? 'PENDING' : getApplicationForJob(job.id).status}</span>
+                                                        <span className="text-xs">{(getApplicationForJob(job.id).status || "").toUpperCase() === 'APPLIED' ? 'PENDING' : (getApplicationForJob(job.id).status || "").toUpperCase()}</span>
                                                     </Badge>
                                                 </div>
                                                 <Button

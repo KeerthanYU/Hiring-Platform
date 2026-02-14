@@ -73,7 +73,7 @@ const AdminDashboard = () => {
     }, [activeTab]);
 
     return (
-        <div className="h-screen pt-24 bg-[var(--bg-primary)] text-[var(--text-primary)] flex overflow-hidden">
+        <div className="h-screen pt-32 bg-[var(--bg-primary)] text-[var(--text-primary)] flex overflow-hidden">
             {/* Sidebar */}
             <aside className="hidden md:flex w-64 h-full bg-[var(--bg-secondary)] border-r border-[var(--border-primary)] p-6 flex-col overflow-y-auto">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-[var(--color-brand-violet)] to-[var(--color-brand-cyan)] bg-clip-text text-transparent mb-8">
