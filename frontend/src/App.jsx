@@ -10,6 +10,7 @@ import CandidateDashboard from "./pages/CandidateDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminApplications from "./pages/AdminApplications"; // 👈 ADD
+import Features from "./pages/Features";
 import AuthSuccess from "./pages/AuthSuccess";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/features" element={<Features />} />
 
         {/* Google OAuth Success */}
         <Route path="/auth/success" element={<AuthSuccess />} />

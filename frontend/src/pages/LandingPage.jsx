@@ -55,7 +55,7 @@ export default function LandingPage() {
                                         </Link>
                                     </Button>
                                     <Button variant="secondary" className="w-full sm:w-auto text-lg">
-                                        View Live Demo
+                                        <Link to="/features">Explore All Features</Link>
                                     </Button>
                                 </>
                             ) : (
