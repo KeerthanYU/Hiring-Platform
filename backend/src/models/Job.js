@@ -25,6 +25,18 @@ const Job = sequelize.define('Job', {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    requirements: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    experience: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    jobType: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,

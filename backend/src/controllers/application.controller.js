@@ -118,8 +118,11 @@ export const applyJob = async (req, res) => {
             });
         }
 
-        // Normalize path (fix Windows backslashes)
-        const resumePath = req.file.path.replace(/\\/g, "/");
+        // Normalize path (fix Windows backslashes) and ensure it starts with /uploads
+        let resumePath = req.file.path.replace(/\\/g, "/");
+        if (!resumePath.startsWith("/uploads")) {
+            resumePath = "/" + resumePath;
+        }
 
         console.log(`[APPLY] Creating application. Candidate: ${candidateId}, Job: ${jobId}, Recruiter: ${job.createdBy}`);
 
@@ -147,7 +150,7 @@ export const applyJob = async (req, res) => {
             coverNote: coverNote || null,
             aiScore,
             aiReason,
-            status: "APPLIED",
+            status: "pending", // Default to lowercase pending
         });
 
         console.log(`[APPLY] Application created successfully. ID: ${application.id}`);
@@ -177,22 +180,24 @@ export const applyJob = async (req, res) => {
 
 export const updateApplicationStatus = async (req, res) => {
     try {
-        const { applicationId } = req.params;
+        const { id } = req.params; // Using 'id' as per request
         const { status } = req.body;
 
-        const allowedStatuses = [
-            'APPLIED',
-            'REVIEWED',
-            'SHORTLISTED',
-            'REJECTED',
-            'HIRED'
-        ];
-
-        if (!allowedStatuses.includes(status)) {
-            return res.status(400).json({ message: 'Invalid status. Must be one of: ' + allowedStatuses.join(', ') });
+        if (!status) {
+            return res.status(400).json({ success: false, message: "Status is required" });
         }
 
-        const application = await Application.findByPk(applicationId, {
+        const normalizedStatus = status.toLowerCase();
+        const allowedStatuses = ["pending", "shortlisted", "rejected", "hired"];
+
+        if (!allowedStatuses.includes(normalizedStatus)) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid status. Must be one of: ${allowedStatuses.join(", ")}`
+            });
+        }
+
+        const application = await Application.findByPk(id, {
             include: {
                 model: Job,
                 as: "job"
@@ -200,31 +205,36 @@ export const updateApplicationStatus = async (req, res) => {
         });
 
         if (!application) {
-            return res.status(404).json({ message: 'Application not found' });
+            return res.status(404).json({ success: false, message: "Application not found" });
         }
 
         // Ensure recruiter owns the job (Job.createdBy)
         if (application.job.createdBy !== req.user.id) {
-            return res.status(403).json({ message: 'Access denied' });
+            return res.status(403).json({ success: false, message: "Access denied: You do not own this job posting" });
         }
 
-        application.status = status;
+        application.status = normalizedStatus;
         await application.save();
 
         // Trigger notification for the candidate
-        await Notification.create({
-            userId: application.candidateId,
-            message: `Your application for ${application.job.title} has been ${status.toLowerCase()}`,
-            type: "APPLICATION",
-            relatedId: application.id,
-        });
+        try {
+            await Notification.create({
+                userId: application.candidateId,
+                message: `Your application for ${application.job.title} has been ${normalizedStatus}`,
+                type: "APPLICATION",
+                relatedId: application.id,
+            });
+        } catch (notiErr) {
+            console.error("Notification failed (non-critical):", notiErr);
+        }
 
         res.json({
-            message: 'Status updated',
+            success: true,
+            message: "Status updated successfully",
             status: application.status
         });
     } catch (error) {
         console.error("Update application status error:", error);
-        res.status(500).json({ message: 'Failed to update status' });
+        res.status(500).json({ success: false, message: "Failed to update status: " + error.message });
     }
 };

@@ -41,8 +41,8 @@ router.post(
     uploadResume.single("resume"),
     applyJob
 );
-router.patch(
-    '/:applicationId/status',
+router.put(
+    '/:id/status',
     auth,
     roleMiddleware('recruiter'),
     updateApplicationStatus
