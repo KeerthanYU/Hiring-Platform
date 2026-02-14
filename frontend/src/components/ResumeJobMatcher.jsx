@@ -14,7 +14,7 @@ import ApplyJob from "./candidate/ApplyJob";
 import { getJobRecommendations } from "../services/jobMatch.api";
 import { toast } from "react-hot-toast";
 
-export default function ResumeJobMatcher({ showApply = true }) {
+export default function ResumeJobMatcher({ showApply = true, jobId = null }) {
     const [recommendations, setRecommendations] = useState([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const fileInputRef = useRef(null);
@@ -25,11 +25,11 @@ export default function ResumeJobMatcher({ showApply = true }) {
 
         try {
             setIsAnalyzing(true);
-            const data = await getJobRecommendations(file);
+            const data = await getJobRecommendations(file, jobId);
             setRecommendations(data.bestMatches);
             toast.success(`Analysis complete! Identified ${data.resumeSkills.length} skills.`);
         } catch (err) {
-            console.error("Analysis failed:", err);
+            console.error("Analysis failed:", err.response?.data || err);
             toast.error(err.response?.data?.message || "Resume analysis failed");
         } finally {
             setIsAnalyzing(false);
