@@ -301,7 +301,14 @@ export default function CandidateList() {
                         </button>
                       </div>
                       <button
-                        onClick={() => window.open(candidate.resumeUrl, '_blank')}
+                        onClick={() => {
+                          const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5002/api";
+                          const baseUrl = API_URL.replace("/api", "");
+                          const fullUrl = baseUrl.endsWith('/')
+                            ? baseUrl + candidate.resumeUrl.replace(/^\//, '')
+                            : baseUrl + '/' + candidate.resumeUrl.replace(/^\//, '');
+                          window.open(fullUrl, '_blank');
+                        }}
                         className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] hover:border-brand-violet text-brand-violet transition-all"
                       >
                         <ExternalLink className="w-5 h-5" />

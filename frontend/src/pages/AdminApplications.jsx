@@ -201,7 +201,10 @@ export default function AdminApplications() {
                                                 icon={ExternalLink}
                                                 onClick={() => {
                                                     const baseUrl = API_BASE_URL.replace("/api", "");
-                                                    window.open(baseUrl + app.resumeUrl, "_blank");
+                                                    const fullUrl = baseUrl.endsWith('/')
+                                                        ? baseUrl + app.resumeUrl.replace(/^\//, '')
+                                                        : baseUrl + '/' + app.resumeUrl.replace(/^\//, '');
+                                                    window.open(fullUrl, "_blank");
                                                 }}
                                             >
                                                 Resume
