@@ -8,7 +8,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CandidateDashboard from "./pages/CandidateDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
-import AdminDashboard from "./pages/AdminDashboard"; // 👈 ADD
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminApplications from "./pages/AdminApplications"; // 👈 ADD
 import AuthSuccess from "./pages/AuthSuccess";
 
 export default function App() {
@@ -47,6 +48,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/applications"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminApplications />
             </ProtectedRoute>
           }
         />

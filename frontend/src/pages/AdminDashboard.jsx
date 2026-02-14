@@ -94,6 +94,13 @@ const AdminDashboard = () => {
                     >
                         Audit Logs
                     </button>
+                    <button
+                        onClick={() => navigate("/admin/applications")}
+                        className="w-full text-left px-4 py-2 rounded-lg transition-colors hover:bg-[var(--border-primary)] flex items-center justify-between group"
+                    >
+                        <span>System Applications</span>
+                        <div className="w-2 h-2 rounded-full bg-brand-violet opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </button>
                 </nav>
                 <div className="mt-auto pt-6 border-t border-[var(--border-primary)]">
                     <div className="flex items-center gap-3 mb-4">
