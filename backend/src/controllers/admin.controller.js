@@ -147,3 +147,35 @@ export const getAuditLogs = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch audit logs" });
     }
 };
+// View all applications (Admin only)
+export const getAdminApplications = async (req, res) => {
+    try {
+        console.log(`[ADMIN] Fetching all applications. Admin ID: ${req.user.id}`);
+        const applications = await Application.findAll({
+            include: [
+                {
+                    model: Job,
+                    as: "job",
+                    attributes: ["title", "company"],
+                },
+                {
+                    model: User,
+                    as: "candidate",
+                    attributes: ["name", "email"],
+                },
+                {
+                    model: User,
+                    as: "recruiter",
+                    attributes: ["name", "email"],
+                }
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+
+        console.log(`[ADMIN] Found ${applications.length} applications.`);
+        res.json({ success: true, applications });
+    } catch (err) {
+        console.error("[ADMIN] Failed to fetch applications:", err);
+        res.status(500).json({ message: "Failed to fetch all applications" });
+    }
+};

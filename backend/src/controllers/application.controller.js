@@ -8,6 +8,7 @@ import Notification from "../models/Notification.js";
 export const getRecruiterApplications = async (req, res) => {
     try {
         const recruiterId = req.user.id;
+        console.log(`[RECRUITER] Fetching applications for Recruiter ID: ${recruiterId}`);
 
         const applications = await Application.findAll({
             where: { recruiterId },
@@ -28,9 +29,10 @@ export const getRecruiterApplications = async (req, res) => {
             ],
         });
 
+        console.log(`[RECRUITER] Found ${applications.length} applications for Recruiter ID: ${recruiterId}`);
         res.json(applications);
     } catch (error) {
-        console.error("Get recruiter applications error:", error);
+        console.error("❌ Get recruiter applications error:", error);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -119,13 +121,13 @@ export const applyJob = async (req, res) => {
         // Normalize path (fix Windows backslashes)
         const resumePath = req.file.path.replace(/\\/g, "/");
 
+        console.log(`[APPLY] Creating application. Candidate: ${candidateId}, Job: ${jobId}, Recruiter: ${job.createdBy}`);
+
         // 5️⃣ Calculate AI score
         let aiScore = 0;
         let aiReason = "AI analysis failed during processing.";
 
         try {
-            // In a real app, we'd extract text from the PDF. 
-            // For now, we simulate based on filename + cover note keywords for demonstration.
             const { score, reasons } = calculateAIScore({
                 resumeText: (req.file.originalname || "") + " " + (coverNote || ""),
                 job
@@ -147,6 +149,8 @@ export const applyJob = async (req, res) => {
             aiReason,
             status: "APPLIED",
         });
+
+        console.log(`[APPLY] Application created successfully. ID: ${application.id}`);
 
         // 7️⃣ Notify Recruiter
         await Notification.create({

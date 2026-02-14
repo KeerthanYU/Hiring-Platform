@@ -6,8 +6,8 @@ dotenv.config();
 // Database instance
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './database.sqlite', // SQLite database file
-    logging: false, // optional: disable logging
+    storage: process.env.NODE_ENV === 'test' ? './database_test.sqlite' : './database.sqlite',
+    logging: false,
     dialectOptions: {
         // Fix SQLITE_BUSY: database is locked
         // mode: 'WAL', // Temporarily disabled due to env hang
