@@ -1,11 +1,6 @@
 import fs from "fs";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdfModule = require("pdf-parse");
 import mammoth from "mammoth";
-
-// Robustly get the pdf function (handles commonjs vs esm default export quirks)
-const pdf = typeof pdfModule === 'function' ? pdfModule : pdfModule.default;
+import { PDFParse } from "pdf-parse";
 
 export const extractResumeText = async (filePath) => {
     try {
@@ -13,23 +8,37 @@ export const extractResumeText = async (filePath) => {
             throw new Error(`File not found at path: ${filePath}`);
         }
 
-        if (filePath.endsWith(".pdf")) {
-            if (typeof pdf !== 'function') {
-                throw new Error("PDF parser initialization failed: pdf-parse is not a function.");
-            }
+        const fileExtension = filePath.split('.').pop().toLowerCase();
+        let extractedText = "";
+
+        if (fileExtension === "pdf") {
             const buffer = fs.readFileSync(filePath);
-            const data = await pdf(buffer);
-            return data.text ? data.text.toLowerCase() : "";
-        }
-
-        if (filePath.endsWith(".docx")) {
+            const parser = new PDFParse({ data: buffer });
+            const result = await parser.getText();
+            extractedText = result.text || "";
+            // Ensure any resources are cleaned up (though PDFParse handle much of this)
+            await parser.destroy();
+            console.log("📄 [RESUME_PARSER] PDF parsed successfully");
+        } else if (fileExtension === "docx") {
             const result = await mammoth.extractRawText({ path: filePath });
-            return result.value ? result.value.toLowerCase() : "";
+            extractedText = result.value || "";
+            console.log("📄 [RESUME_PARSER] DOCX parsed successfully");
+        } else {
+            console.warn(`⚠️ [RESUME_PARSER] Unsupported file format: ${fileExtension}`);
+            throw new Error(`Unsupported file format: .${fileExtension}`);
         }
 
-        return "";
+        if (!extractedText.trim()) {
+            console.warn(`⚠️ [RESUME_PARSER] No text extracted from ${filePath}`);
+        }
+
+        return extractedText.trim().toLowerCase();
     } catch (error) {
-        console.error(`❌ [RESUME_PARSER_ERROR] Failed to extract text from ${filePath}:`, error.message);
-        throw new Error(`Resume parsing failed: ${error.message}`);
+        console.error(
+            `❌ [RESUME_PARSER_ERROR] Failed to extract text from ${filePath}:`,
+            error.message
+        );
+
+        throw error;
     }
 };
