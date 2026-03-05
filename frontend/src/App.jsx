@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminApplications from "./pages/AdminApplications"; // 👈 ADD
 import Features from "./pages/Features";
 import AuthSuccess from "./pages/AuthSuccess";
+import ResumeAnalysis from "./pages/ResumeAnalysis";
 
 export default function App() {
   return (
@@ -58,6 +59,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminApplications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/resume-analysis"
+          element={
+            <ProtectedRoute allowedRoles={["candidate"]}>
+              <ResumeAnalysis />
             </ProtectedRoute>
           }
         />
