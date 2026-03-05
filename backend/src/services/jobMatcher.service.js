@@ -1,6 +1,14 @@
 export const calculateJobMatchScore = (resumeSkills, jobSkills) => {
-    const matchedSkills = resumeSkills.filter(skill =>
-        jobSkills.includes(skill)
+    if (!jobSkills || jobSkills.length === 0) {
+        return { score: 0, matchedSkills: [], missingSkills: [] };
+    }
+
+    const matchedSkills = jobSkills.filter(skill =>
+        resumeSkills.includes(skill)
+    );
+
+    const missingSkills = jobSkills.filter(skill =>
+        !resumeSkills.includes(skill)
     );
 
     const score = Math.round(
@@ -9,6 +17,7 @@ export const calculateJobMatchScore = (resumeSkills, jobSkills) => {
 
     return {
         score,
-        matchedSkills
+        matchedSkills,
+        missingSkills
     };
 };

@@ -1,11 +1,4 @@
-const SKILL_KEYWORDS = [
-    "javascript", "react", "node", "express", "python",
-    "java", "sql", "mongodb", "machine learning",
-    "deep learning", "tensorflow", "pytorch",
-    "html", "css", "docker", "aws", "kubernetes",
-    "typescript", "next.js", "tailwind", "postgresql",
-    "redis", "git", "ci/cd", "azure", "gcp"
-];
+import { SKILL_KEYWORDS } from '../utils/skillsList.js';
 
 export const extractSkills = (resumeText) => {
     if (!resumeText) return [];

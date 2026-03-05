@@ -59,7 +59,7 @@ export const recommendJobsFromResume = async (req, res) => {
             const rawSkills = job.skills || "";
             const jobSkills = rawSkills ? rawSkills.split(",").map(s => s.trim().toLowerCase()) : [];
 
-            const { score, matchedSkills } =
+            const { score, matchedSkills, missingSkills } =
                 calculateJobMatchScore(resumeSkills, jobSkills);
 
             return {
@@ -67,7 +67,8 @@ export const recommendJobsFromResume = async (req, res) => {
                 title: job.title,
                 company: job.company,
                 score,
-                matchedSkills
+                matchedSkills,
+                missingSkills
             };
         });
 
