@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config(); // MUST be first, before any env var usage
+import fs from 'fs';
 console.log("🚀 Server script starting with PostgreSQL...");
 
 import express from 'express';
@@ -36,10 +37,7 @@ const app = express();
 // =======================
 app.use(
     cors({
-        origin: [
-            process.env.FRONTEND_URL || "http://localhost:5173",
-            "https://hiringplatform-keerthanyus-projects.vercel.app"
-        ],
+        origin: true,
         credentials: true,
     })
 );
@@ -80,17 +78,26 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/job-match", jobMatchRoutes);
 app.use("/api/ai", aiRoutes);
 
+
+// =======================
+// 📁 Ensure Uploads Dir
+// =======================
+const uploadsDir = path.resolve("uploads");
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+    console.log("📁 Created uploads directory");
+}
+
 // =======================
 // 🚀 Start Server
 // =======================
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 5000;
 
 console.log("🔄 Syncing database...");
 sequelize
     .sync({ alter: false })
     .then(() => {
         console.log("✅ Database synced successfully (PostgreSQL)");
-        console.log(`📡 Attempting to listen on port ${PORT}...`);
         app.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
         });
