@@ -1,17 +1,13 @@
 import dotenv from 'dotenv';
 dotenv.config(); // MUST be first, before any env var usage
-console.log("🚀 Server script starting...");
+console.log("🚀 Server script starting with PostgreSQL...");
 
 import express from 'express';
-console.log("📦 Express imported");
 import cors from 'cors';
-console.log("📦 Cors imported");
 import passport from 'passport';
-console.log("📦 Passport imported");
 import path from 'path';
-console.log("📦 Path imported");
-import sequelize from './db.js';
-console.log("📦 Sequelize/DB imported");
+import sequelize from '../config/database.js';
+console.log("📦 Sequelize/PostgreSQL imported");
 
 // Import passport strategy config (registers the Google OAuth strategy)
 import './config/passport.js';
@@ -67,7 +63,7 @@ app.get("/", (req, res) => {
     res.json({
         message: "Hiring Platform Backend API is running",
         status: "Online",
-        database: "SQLite (Sequelize)",
+        database: "PostgreSQL (Sequelize)",
     });
 });
 
@@ -91,9 +87,9 @@ const PORT = process.env.PORT || 5002;
 
 console.log("🔄 Syncing database...");
 sequelize
-    .sync({ alter: false }) // ⚠️ DO NOT use alter:true with SQLite
+    .sync({ alter: false })
     .then(() => {
-        console.log("✅ Database synced successfully");
+        console.log("✅ Database synced successfully (PostgreSQL)");
         console.log(`📡 Attempting to listen on port ${PORT}...`);
         app.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);

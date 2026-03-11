@@ -1,7 +1,7 @@
 
 import Job from '../models/Job.js';
 import User from '../models/User.js';
-import sequelize from '../db.js';
+import sequelize from '../../config/database.js';
 
 const seedJobs = async () => {
     try {
