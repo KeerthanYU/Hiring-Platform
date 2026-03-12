@@ -1,105 +1,197 @@
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcryptjs";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
+import { Sequelize, DataTypes } from "sequelize";
 
 const app = express();
-app.use(cors({ origin: "*" })); // Allow all for development, can be restricted later
+
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-const PORT = 5002;
+const PORT = process.env.PORT || 5002;
 
-// Root route to prevent "Unexpected token '<'" errors when hitting /
-app.get("/", (req, res) => {
-    res.json({ message: "SkillTest AI API is running", version: "1.0.0" });
+/* ---------------- DATABASE CONNECTION ---------------- */
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    logging: false,
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    }
 });
 
-// Initialize SQLite database
-let db;
-(async () => {
-    db = await open({
-        filename: "./database.db",
-        driver: sqlite3.Database,
-    });
+/* ---------------- USER MODEL ---------------- */
 
-    await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE,
-      password TEXT NOT NULL,
-      role TEXT NOT NULL
-    )
-  `);
+const User = sequelize.define("User", {
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+});
+
+/* ---------------- DATABASE INIT ---------------- */
+
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log("✅ PostgreSQL connected");
+
+        await sequelize.sync();
+        console.log("✅ Database synced");
+    } catch (error) {
+        console.error("❌ Database error:", error);
+    }
 })();
 
-// -------- REGISTER ENDPOINT --------
+/* ---------------- ROOT ROUTE ---------------- */
+
+app.get("/", (req, res) => {
+    res.json({
+        message: "SkillTest AI API is running",
+        version: "1.0.0"
+    });
+});
+
+/* ---------------- REGISTER ---------------- */
+
 app.post("/api/register", async (req, res) => {
     const { name, email, password, role } = req.body;
 
     if (!name || !email || !password || !role) {
-        return res.status(400).json({ message: "All fields are required" });
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required"
+        });
     }
 
     try {
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert user
-        await db.run(
-            "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-            [name, email, hashedPassword, role]
-        );
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role
+        });
 
-        res.json({ success: true, message: "User registered successfully" });
+        res.json({
+            success: true,
+            message: "User registered successfully",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
+
     } catch (err) {
-        if (err.message.includes("UNIQUE constraint")) {
-            return res.status(400).json({ success: false, message: "Email already exists" });
+
+        if (err.name === "SequelizeUniqueConstraintError") {
+            return res.status(400).json({
+                success: false,
+                message: "Email already exists"
+            });
         }
-        res.status(500).json({ success: false, message: "Server error during registration" });
+
+        res.status(500).json({
+            success: false,
+            message: "Server error during registration"
+        });
     }
 });
 
-// -------- LOGIN ENDPOINT --------
+/* ---------------- LOGIN ---------------- */
+
 app.post("/api/login", async (req, res) => {
+
     const { email, password } = req.body;
 
-    if (!email || !password)
-        return res.status(400).json({ success: false, message: "Email and password are required" });
+    if (!email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "Email and password are required"
+        });
+    }
 
     try {
-        const user = await db.get("SELECT * FROM users WHERE email = ?", [email]);
 
-        if (!user)
-            return res.status(400).json({ success: false, message: "Invalid email or password" });
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch)
-            return res.status(400).json({ success: false, message: "Invalid email or password" });
 
-        // Return user data (remove password)
-        const { password: pwd, ...userData } = user;
-        res.json({ success: true, user: userData });
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
+
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server error during login" });
+
+        res.status(500).json({
+            success: false,
+            message: "Server error during login"
+        });
+
     }
 });
 
-// Custom 404 handler
-app.use((req, res) => {
-    res.status(404).json({ success: false, message: "Route not found" });
-});
+/* ---------------- 404 HANDLER ---------------- */
 
-// Global error handler
-app.use((err, req, res, next) => {
-    console.error("🔥 Global Error:", err);
-    res.status(500).json({
+app.use((req, res) => {
+    res.status(404).json({
         success: false,
-        message: "Internal server error",
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        message: "Route not found"
     });
 });
 
-// Start server
-app.listen(PORT, () => console.log(`🚀 SkillTest AI Backend running on http://localhost:${PORT}`));
+/* ---------------- GLOBAL ERROR ---------------- */
+
+app.use((err, req, res, next) => {
+    console.error("🔥 Global Error:", err);
+
+    res.status(500).json({
+        success: false,
+        message: "Internal server error"
+    });
+});
+
+/* ---------------- START SERVER ---------------- */
+
+app.listen(PORT, () => {
+    console.log(`🚀 SkillTest AI Backend running on port ${PORT}`);
+});
