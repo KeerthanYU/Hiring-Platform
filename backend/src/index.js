@@ -78,6 +78,15 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/job-match", jobMatchRoutes);
 app.use("/api/ai", aiRoutes);
 
+// =======================
+// 🚫 404 API Route Handler
+// =======================
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "API Route Not Found (Running from src/index.js)"
+    });
+});
 
 // =======================
 // 📁 Ensure Uploads Dir
