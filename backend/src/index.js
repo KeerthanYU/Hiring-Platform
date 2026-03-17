@@ -37,7 +37,7 @@ const app = express();
 // =======================
 app.use(
     cors({
-        origin: true,
+        origin: process.env.GOOGLE_CALLBACK_URL,
         credentials: true,
     })
 );
