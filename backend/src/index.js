@@ -37,7 +37,7 @@ const app = express();
 // =======================
 app.use(
     cors({
-        origin: process.env.GOOGLE_CALLBACK_URL,
+        origin: process.env.FRONTEND_URL,
         credentials: true,
     })
 );
@@ -68,8 +68,8 @@ app.get("/", (req, res) => {
 // =======================
 // 🚏 API Routes
 // =======================
-app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/users", userRoutes);
