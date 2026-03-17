@@ -33,6 +33,7 @@ export default function Login() {
 
   // ✅ Google OAuth login
   const googleLogin = () => {
+    console.log("Google Auth URL:", import.meta.env.VITE_GOOGLE_AUTH_URL);
     window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL;
   };
 
