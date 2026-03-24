@@ -302,7 +302,7 @@ export default function CandidateList() {
                       </div>
                       <button
                         onClick={() => {
-                          const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+                          const API_URL = import.meta.env.VITE_API_URL;
                           const baseUrl = API_URL.replace("/api", "");
                           const fullUrl = baseUrl.endsWith('/')
                             ? baseUrl + candidate.resumeUrl.replace(/^\//, '')

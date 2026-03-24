@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || "http://localhost:5000") + "/api",
+  baseURL: import.meta.env.VITE_API_URL + "/api",
   withCredentials: true,
 });
 
@@ -24,9 +24,9 @@ api.interceptors.response.use(
     if (error.response) {
       const { status, data } = error.response;
 
-      // Auto-logout on 401 Unauthorized
-      if (status === 401) {
-        console.warn("⚠️ Unauthorized – redirecting to login.");
+      // Auto-logout on 401 Unauthorized or 403 Forbidden
+      if (status === 401 || status === 403) {
+        console.warn("⚠️ Unauthorized/Forbidden – redirecting to login.");
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         if (window.location.pathname !== "/login") {
