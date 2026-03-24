@@ -12,15 +12,21 @@ export default function AuthSuccess() {
 
         if (token) {
             try {
-                // Decode JWT to get role and name (simple base64 decode of payload)
+                // Decode JWT payload (base64url → JSON)
                 const payloadBase64 = token.split(".")[1];
-                const payload = JSON.parse(atob(payloadBase64));
-                const { role, name } = payload;
+                // Fix base64url padding before decoding
+                const base64 = payloadBase64.replace(/-/g, "+").replace(/_/g, "/");
+                const payload = JSON.parse(atob(base64));
+                const { id, email, role, name } = payload;
 
                 console.log("✅ OAuth Success. User:", name, "Role:", role);
 
-                // Update context state with token and decoded user info
-                setAuth(token, { role, name });
+                if (!role) {
+                    throw new Error("Token payload missing role field");
+                }
+
+                // Store complete user object so all dashboards have access to user data
+                setAuth(token, { id, email, role, name });
 
                 // Redirect based on role
                 const redirectPath = role === "admin" ? "/admin" : (role === "recruiter" ? "/recruiter" : "/candidate");

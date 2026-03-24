@@ -33,8 +33,13 @@ export default function Login() {
 
   // ✅ Google OAuth login
   const googleLogin = () => {
-    console.log("Google Auth URL:", import.meta.env.VITE_GOOGLE_AUTH_URL);
-    window.location.href = import.meta.env.VITE_GOOGLE_AUTH_URL;
+    const googleAuthUrl = import.meta.env.VITE_GOOGLE_AUTH_URL;
+    if (!googleAuthUrl) {
+      setError("Google login is not configured. Please contact support.");
+      console.error("❌ VITE_GOOGLE_AUTH_URL is not set in environment variables.");
+      return;
+    }
+    window.location.href = googleAuthUrl;
   };
 
   return (
