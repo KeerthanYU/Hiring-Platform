@@ -37,7 +37,7 @@ const app = express();
 // =======================
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL,
+        origin: process.env.FRONTEND_URL || "*",
         credentials: true,
     })
 );
@@ -104,7 +104,7 @@ const PORT = process.env.PORT || 5000;
 
 console.log("🔄 Syncing database...");
 sequelize
-    .sync({ alter: false })
+    .sync({ alter: true })
     .then(() => {
         console.log("✅ Database synced successfully (PostgreSQL)");
         app.listen(PORT, () => {

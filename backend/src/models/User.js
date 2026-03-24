@@ -7,6 +7,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+
     email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -15,27 +16,39 @@ const User = sequelize.define('User', {
             isEmail: true
         }
     },
+
     password: {
         type: DataTypes.STRING,
         allowNull: true,
     },
+
+    // ✅ REQUIRED FOR GOOGLE LOGIN
+    googleId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+
     provider: {
         type: DataTypes.STRING,
         defaultValue: 'local', // local | google
     },
+
     role: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'candidate', // candidate | recruiter | admin
+        defaultValue: 'candidate',
     },
+
     accountStatus: {
         type: DataTypes.STRING,
-        defaultValue: 'active', // active | suspended | pending
+        defaultValue: 'active',
     },
+
     isVerifiedRecruiter: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+
 }, {
     hooks: {
         beforeSave: async (user) => {
@@ -50,7 +63,7 @@ const User = sequelize.define('User', {
     }
 });
 
-// Instance method to compare passwords
+// Compare password
 User.prototype.comparePassword = async function (enteredPassword) {
     if (!this.password) return false;
     return await bcrypt.compare(enteredPassword, this.password);
