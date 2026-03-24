@@ -30,7 +30,8 @@ router.get(
             );
 
             // Redirect to frontend with token and user info
-            const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+            const frontendUrl = process.env.FRONTEND_URL;
+            if (!frontendUrl) throw new Error("FRONTEND_URL environment variable is missing in server config");
             const redirectUrl = new URL(`${frontendUrl}/auth/success`);
             redirectUrl.searchParams.append("token", token);
 

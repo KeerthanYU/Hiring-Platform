@@ -37,7 +37,7 @@ const app = express();
 // =======================
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "*",
+        origin: process.env.FRONTEND_URL || "http://localhost:5173", // Allow specific origins, in prod this forces the explicit env var
         credentials: true,
     })
 );
@@ -85,6 +85,18 @@ app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: "API Route Not Found (Running from src/index.js)"
+    });
+});
+
+// =======================
+// 🔥 500 Global Error Handler
+// =======================
+app.use((err, req, res, next) => {
+    console.error("🔥 Global Error:", err.stack);
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: process.env.NODE_ENV === "development" ? err.message : undefined
     });
 });
 

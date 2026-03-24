@@ -14,9 +14,7 @@ passport.use(
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 
             // ✅ FIX: fallback if ENV missing
-            callbackURL:
-                process.env.GOOGLE_CALLBACK_URL ||
-                "https://hiring-platform-r2ml.onrender.com/api/auth/google/callback",
+            callbackURL: process.env.GOOGLE_CALLBACK_URL,
         },
 
         async (accessToken, refreshToken, profile, done) => {
