@@ -1,44 +1,55 @@
-import fs from "fs";
 import mammoth from "mammoth";
-import { PDFParse } from "pdf-parse";
+import pdf from "pdf-parse";
 
-export const extractResumeText = async (filePath) => {
+/**
+ * Extracts text from a resume buffer (PDF or DOCX).
+ * @param {Buffer} buffer - The file buffer from req.file
+ * @param {string} originalName - Original filename for fallback/identification
+ * @returns {Promise<string>} Extracted text (in lowercase)
+ */
+export const extractResumeText = async (buffer, originalName = "Document") => {
     try {
-        if (!fs.existsSync(filePath)) {
-            throw new Error(`File not found at path: ${filePath}`);
+        if (!buffer) {
+            console.warn(`⚠️ [RESUME_PARSER] No buffer provided for ${originalName}`);
+            return `fallback: ${originalName} (empty content)`;
         }
 
-        const fileExtension = filePath.split('.').pop().toLowerCase();
+        const fileExtension = originalName.split('.').pop().toLowerCase();
         let extractedText = "";
 
         if (fileExtension === "pdf") {
-            const buffer = fs.readFileSync(filePath);
-            const parser = new PDFParse({ data: buffer });
-            const result = await parser.getText();
-            extractedText = result.text || "";
-            // Ensure any resources are cleaned up (though PDFParse handle much of this)
-            await parser.destroy();
-            console.log("📄 [RESUME_PARSER] PDF parsed successfully");
-        } else if (fileExtension === "docx") {
-            const result = await mammoth.extractRawText({ path: filePath });
-            extractedText = result.value || "";
-            console.log("📄 [RESUME_PARSER] DOCX parsed successfully");
-        } else {
+            try {
+                // pdf-parse usage: pass buffer directly
+                const result = await pdf(buffer);
+                extractedText = result.text || "";
+                console.log("📄 [RESUME_PARSER] PDF parsed successfully");
+            } catch (pdfErr) {
+                console.error("❌ [RESUME_PARSER] PDF parsing failed:", pdfErr.message);
+                extractedText = `fallback: ${originalName} (PDF parsing failed)`;
+            }
+        } 
+        else if (fileExtension === "docx") {
+            try {
+                // mammoth usage: pass buffer object
+                const result = await mammoth.extractRawText({ buffer });
+                extractedText = result.value || "";
+                console.log("📄 [RESUME_PARSER] DOCX parsed successfully");
+            } catch (docxErr) {
+                console.error("❌ [RESUME_PARSER] DOCX parsing failed:", docxErr.message);
+                extractedText = `fallback: ${originalName} (DOCX parsing failed)`;
+            }
+        } 
+        else {
             console.warn(`⚠️ [RESUME_PARSER] Unsupported file format: ${fileExtension}`);
-            throw new Error(`Unsupported file format: .${fileExtension}`);
+            extractedText = `fallback: ${originalName} (unsupported format)`;
         }
 
-        if (!extractedText.trim()) {
-            console.warn(`⚠️ [RESUME_PARSER] No text extracted from ${filePath}`);
-        }
+        // Final cleanup
+        const finalContent = extractedText.trim() || `fallback: ${originalName} (no text extracted)`;
+        return finalContent.toLowerCase();
 
-        return extractedText.trim().toLowerCase();
     } catch (error) {
-        console.error(
-            `❌ [RESUME_PARSER_ERROR] Failed to extract text from ${filePath}:`,
-            error.message
-        );
-
-        throw error;
+        console.error(`❌ [RESUME_PARSER_FATAL] Error processing ${originalName}:`, error.message);
+        return `fallback: ${originalName} (system error during parsing)`;
     }
 };

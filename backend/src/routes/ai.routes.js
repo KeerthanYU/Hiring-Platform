@@ -8,14 +8,14 @@ const router = express.Router();
 router.post(
     "/match-resume",
     auth,
-    upload.single("resume"),
+    upload("resume"),
     matchResume
 );
 
 router.post(
     "/analyze-resume",
     auth,
-    upload.single("resume"),
+    upload("resume"),
     analyzeResume
 );
 

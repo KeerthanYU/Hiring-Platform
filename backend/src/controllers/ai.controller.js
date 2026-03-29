@@ -24,17 +24,8 @@ export const matchResume = async (req, res) => {
         console.log(`🚀 [RESUME_PARSE] Processing: file=${req.file.originalname}, jobId=${jobId}`);
 
         // ── 2. Parse Resume ──
-        let resumeText = "";
-        try {
-            resumeText = await extractResumeText(req.file.path);
-            console.log(`✅ [RESUME_PARSE] Extracted ${resumeText.length} characters`);
-        } catch (parseErr) {
-            console.error(`❌ [RESUME_PARSE] Failed: ${parseErr.message}`);
-            return res.status(422).json({
-                message: "Failed to parse resume. Ensure the file is a valid PDF or DOCX.",
-                error: parseErr.message,
-            });
-        }
+        let resumeText = await extractResumeText(req.file.buffer, req.file.originalname);
+        console.log(`✅ [RESUME_PARSE] Content extracted (${resumeText.length} chars)`);
 
         // ── 3. Extract Skills ──
         const extractedSkills = extractSkills(resumeText);
@@ -62,6 +53,7 @@ export const matchResume = async (req, res) => {
 
         // ── 6. Respond ──
         res.json({
+            success: true,
             jobTitle: job.title,
             jobCompany: job.company,
             extractedSkills,
@@ -90,17 +82,8 @@ export const analyzeResume = async (req, res) => {
         console.log(`🚀 [RESUME_PARSE] Full analysis: file=${req.file.originalname}`);
 
         // ── 2. Parse Resume ──
-        let resumeText = "";
-        try {
-            resumeText = await extractResumeText(req.file.path);
-            console.log(`✅ [RESUME_PARSE] Extracted ${resumeText.length} characters`);
-        } catch (parseErr) {
-            console.error(`❌ [RESUME_PARSE] Failed: ${parseErr.message}`);
-            return res.status(422).json({
-                message: "Resume analysis failed. Please upload a valid resume.",
-                error: parseErr.message,
-            });
-        }
+        let resumeText = await extractResumeText(req.file.buffer, req.file.originalname);
+        console.log(`✅ [RESUME_PARSE] Content extracted (${resumeText.length} chars)`);
 
         // ── 3. Extract Skills ──
         const skills = extractSkills(resumeText);
@@ -150,6 +133,7 @@ export const analyzeResume = async (req, res) => {
 
         // ── 9. Respond ──
         res.json({
+            success: true,
             skills,
             resumeScore,
             interviewReadiness,

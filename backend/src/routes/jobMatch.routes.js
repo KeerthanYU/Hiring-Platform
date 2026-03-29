@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
     "/recommend",
     auth,
-    upload.single("resume"),
+    upload("resume"),
     recommendJobsFromResume
 );
 

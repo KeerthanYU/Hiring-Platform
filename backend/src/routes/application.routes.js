@@ -38,7 +38,7 @@ router.post(
     },
     auth,
     roleMiddleware("candidate"),
-    uploadResume.single("resume"),
+    uploadResume("resume"),
     applyJob
 );
 router.put(

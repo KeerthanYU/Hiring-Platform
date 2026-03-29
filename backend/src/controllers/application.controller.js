@@ -3,6 +3,8 @@ import Job from "../models/Job.js";
 import User from "../models/User.js";
 import { calculateAIScore } from "../services/aiScore.service.js";
 import Notification from "../models/Notification.js";
+import { extractResumeText } from "../services/resumeParser.service.js";
+
 
 // Get all applications for a recruiter
 export const getRecruiterApplications = async (req, res) => {
@@ -76,28 +78,39 @@ export const applyJob = async (req, res) => {
         const { jobId, coverNote } = req.body;
         const user = req.user;
 
-        // 1️⃣ Role check
+        // 1️⃣ Explicit jobId validation
+        if (!jobId) {
+            return res.status(400).json({
+                success: false,
+                message: "Job ID is required to apply",
+            });
+        }
+
+        // 2️⃣ Role check
         if (user.role !== "candidate") {
             return res.status(403).json({
+                success: false,
                 message: "Only candidates can apply for jobs",
             });
         }
 
-        // 2️⃣ Check job exists
+        // 3️⃣ Check job exists
         const job = await Job.findByPk(jobId);
         if (!job) {
             return res.status(404).json({
+                success: false,
                 message: "Job not found",
             });
         }
 
         if (!job.createdBy) {
             return res.status(500).json({
+                success: false,
                 message: "Job recruiter mapping missing (createdBy is null)",
             });
         }
 
-        // 3️⃣ Prevent duplicate applications
+        // 4️⃣ Prevent duplicate applications
         const existingApplication = await Application.findOne({
             where: {
                 jobId,
@@ -107,73 +120,81 @@ export const applyJob = async (req, res) => {
 
         if (existingApplication) {
             return res.status(400).json({
+                success: false,
                 message: "You have already applied for this job",
             });
         }
 
-        // 4️⃣ Resume required
+        // 5️⃣ Strict req.file check
         if (!req.file) {
             return res.status(400).json({
-                message: "Resume is required (PDF only)",
+                success: false,
+                message: "Resume file (PDF or DOCX) is required",
             });
         }
 
-        // Normalize path (fix Windows backslashes) and ensure it starts with /uploads
-        let resumePath = req.file.path.replace(/\\/g, "/");
-        if (!resumePath.startsWith("/uploads")) {
-            resumePath = "/" + resumePath;
-        }
+        console.log(`[APPLY] Processing application. Candidate: ${candidateId}, Job: ${jobId}`);
 
-        console.log(`[APPLY] Creating application. Candidate: ${candidateId}, Job: ${jobId}, Recruiter: ${job.createdBy}`);
-
-        // 5️⃣ Calculate AI score
+        // 6️⃣ Parse Resume text from buffer
+        const resumeText = await extractResumeText(req.file.buffer, req.file.originalname);
+        
+        // 7️⃣ Calculate AI score with crash protection
         let aiScore = 0;
-        let aiReason = "AI analysis failed during processing.";
+        let aiReason = "AI analysis failed or was skipped.";
 
         try {
             const { score, reasons } = calculateAIScore({
-                resumeText: (req.file.originalname || "") + " " + (coverNote || ""),
+                resumeText: (resumeText || "") + " " + (coverNote || ""),
                 job
             });
             aiScore = score;
             aiReason = reasons.join(" | ");
+            console.log(`[APPLY] AI Score calculated: ${aiScore}`);
         } catch (scoreErr) {
-            console.error("AI Scoring failed, proceeding with default score:", scoreErr);
+            console.error("❌ [APPLY_AI_ERROR] AI Scoring failed, using fallback:", scoreErr.message);
+            aiReason = "AI analysis component encountered an issue. Manual review suggested.";
         }
 
-        // 6️⃣ Create application
+        // 8️⃣ Create application
         const application = await Application.create({
             candidateId: candidateId,
             jobId,
-            recruiterId: job.createdBy, // Correctly assign recruiterId using job.createdBy
-            resumeUrl: resumePath,
+            recruiterId: job.createdBy,
+            resumeUrl: `uploads/memory/${req.file.originalname}`, // Generic URL since in-memory
             coverNote: coverNote || null,
             aiScore,
             aiReason,
-            status: "pending", // Default to lowercase pending
+            status: "pending",
         });
 
         console.log(`[APPLY] Application created successfully. ID: ${application.id}`);
 
-        // 7️⃣ Notify Recruiter
-        await Notification.create({
-            userId: job.createdBy,
-            message: `New application received for ${job.title} from ${user.name || "a candidate"}`,
-            type: "APPLICATION",
-            relatedId: application.id,
-        });
+        // 9️⃣ Notify Recruiter
+        try {
+            await Notification.create({
+                userId: job.createdBy,
+                message: `New application received for ${job.title} from ${user.name || "a candidate"}`,
+                type: "APPLICATION",
+                relatedId: application.id,
+            });
+        } catch (notiErr) {
+            console.warn("⚠️ [APPLY_NOTIFY_ERROR] Notification failed (non-critical):", notiErr.message);
+        }
 
         return res.status(201).json({
+            success: true,
             message: "Application submitted successfully",
             application: {
                 id: application.id,
-                status: application.status
+                status: application.status,
+                aiScore
             },
         });
     } catch (error) {
-        console.error("Apply job error:", error);
+        console.error("❌ [APPLY_JOB_FATAL] Error:", error.message);
         return res.status(500).json({
-            message: "Failed to apply for job",
+            success: false,
+            message: "Failed to apply for job. Please try again later.",
         });
     }
 };

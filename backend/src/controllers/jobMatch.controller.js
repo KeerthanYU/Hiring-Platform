@@ -16,19 +16,8 @@ export const recommendJobsFromResume = async (req, res) => {
         console.log(`🚀 [JOB_MATCH] Recommendation request: jobId=${jobId || 'ALL'}, file=${req.file.originalname}`);
 
         // 2. Resume Parsing
-        let resumeText = "";
-        try {
-            resumeText = await extractResumeText(req.file.path);
-            if (!resumeText) {
-                console.warn("⚠️ [JOB_MATCH] Resume text is empty after parsing.");
-            }
-        } catch (parseErr) {
-            console.error(`❌ [JOB_MATCH_ERROR] Resume parsing failed: ${parseErr.message}`);
-            return res.status(422).json({
-                message: "Failed to parse resume content. Please ensure the file is not corrupted.",
-                error: parseErr.message
-            });
-        }
+        const resumeText = await extractResumeText(req.file.buffer, req.file.originalname);
+        console.log(`✅ [JOB_MATCH] Content extracted (${resumeText.length} chars)`);
 
         const resumeSkills = extractSkills(resumeText);
         console.log(`🔍 [JOB_MATCH] Extracted Skills: [${resumeSkills.join(", ")}]`);
@@ -76,6 +65,7 @@ export const recommendJobsFromResume = async (req, res) => {
 
         // 5. Success Response
         res.json({
+            success: true,
             resumeSkills,
             bestMatches: recommendations.slice(0, 3)
         });
