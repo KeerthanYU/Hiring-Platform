@@ -39,9 +39,18 @@ api.interceptors.response.use(
         console.error("🔥 Server error:", data?.message || "Internal server error");
       }
 
-      // Construct a user-friendly error message
-      const message = data?.message || `Request failed (${status})`;
+      // Construct a user-friendly error message safely
+      let message = "An unexpected error occurred";
+      if (data?.message) {
+        message = typeof data.message === "string" ? data.message : (data.message.error || data.message.message || JSON.stringify(data.message));
+      } else if (data?.error) {
+        message = typeof data.error === "string" ? data.error : JSON.stringify(data.error);
+      } else {
+        message = `Request failed with status ${status}`;
+      }
+
       error.userMessage = message;
+      console.error(`❌ API Error [${status}]:`, message);
     } else if (error.request) {
       // Network error – no response received
       console.error("🌐 Network error: No response from server. Is the backend running?");

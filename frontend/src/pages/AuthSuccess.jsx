@@ -7,39 +7,40 @@ export default function AuthSuccess() {
     const { setAuth } = useContext(AuthContext);
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
+        // 1. Parse token from URL
+        const query = new URLSearchParams(window.location.search);
+        const token = query.get("token");
 
         if (token) {
+            // 2. IMMEDIATELY scrub the token from the URL to prevent it from entering history
+            // Use replaceState to keep the user on /auth/success but remove the query string
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+
             try {
-                // Decode JWT payload (base64url → JSON)
+                // 3. Decode JWT payload
                 const payloadBase64 = token.split(".")[1];
-                // Fix base64url padding before decoding
                 const base64 = payloadBase64.replace(/-/g, "+").replace(/_/g, "/");
                 const payload = JSON.parse(atob(base64));
                 const { id, email, role, name } = payload;
 
-                console.log("✅ OAuth Success. User:", name, "Role:", role);
+                console.log("✅ OAuth Logic: Token processed. Redirecting...");
 
-                if (!role) {
-                    throw new Error("Token payload missing role field");
-                }
+                if (!role) throw new Error("Token payload missing role");
 
-                // Store complete user object so all dashboards have access to user data
+                // 4. Update Auth State
                 setAuth(token, { id, email, role, name });
 
-                // Redirect based on role
+                // 5. Secure Redirect
                 const redirectPath = role === "admin" ? "/admin" : (role === "recruiter" ? "/recruiter" : "/candidate");
+                navigate(redirectPath, { replace: true });
 
-                setTimeout(() => {
-                    navigate(redirectPath, { replace: true });
-                }, 100);
             } catch (err) {
-                console.error("❌ Failed to decode OAuth token:", err);
+                console.error("❌ OAuth Cleanup Error:", err.message);
                 navigate("/login?error=invalid_token", { replace: true });
             }
         } else {
-            console.error("❌ AuthSuccess: No token found in URL");
+            console.warn("⚠️ AuthSuccess: Missing token in redirect.");
             navigate("/login", { replace: true });
         }
     }, [navigate, setAuth]);
