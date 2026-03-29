@@ -1,5 +1,7 @@
 import mammoth from "mammoth";
-import pdf from "pdf-parse";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const pdf = require("pdf-parse");
 
 /**
  * Extracts text from a resume buffer (PDF or DOCX).
