@@ -30,15 +30,19 @@ router.get(
             );
 
             // Redirect to frontend with token and user info
-            const frontendUrl = process.env.FRONTEND_URL;
-            if (!frontendUrl) throw new Error("FRONTEND_URL environment variable is missing in server config");
+            const rawFrontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+            const frontendUrl = rawFrontendUrl.replace(/\/$/, "");
+            
+            console.log(`🔗 OAuth: Redirecting to ${frontendUrl}/auth/success`);
+
             const redirectUrl = new URL(`${frontendUrl}/auth/success`);
             redirectUrl.searchParams.append("token", token);
 
             res.redirect(redirectUrl.toString());
         } catch (error) {
             console.error("❌ Google Auth Callback Error:", error);
-            res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
+            const redirectErrorUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "") + "/login?error=auth_failed";
+            res.redirect(redirectErrorUrl);
         }
     }
 );

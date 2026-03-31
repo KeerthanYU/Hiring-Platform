@@ -35,9 +35,13 @@ const app = express();
 // =======================
 // 🌐 Global Middleware
 // =======================
+// CORS configuration
+const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
+console.log(`🌍 CORS: Allowing requests from ${frontendUrl}`);
+
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL || "http://localhost:5173", // Allow specific origins, in prod this forces the explicit env var
+        origin: [frontendUrl, `${frontendUrl}/`], // Handle with and without slash
         credentials: true,
     })
 );
