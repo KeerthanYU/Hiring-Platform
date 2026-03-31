@@ -118,16 +118,17 @@ if (!fs.existsSync(uploadsDir)) {
 // =======================
 const PORT = process.env.PORT || 5000;
 
-console.log("🔄 Syncing database...");
-sequelize
-    .sync({ alter: true })
-    .then(() => {
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// Run DB sync separately
+(async () => {
+    try {
+        console.log("🔄 Syncing database...");
+        await sequelize.sync({ alter: true });
         console.log("✅ Database synced successfully (PostgreSQL)");
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-        });
-    })
-    .catch((err) => {
-        console.error("❌ Database sync failed CRITICAL:", err);
-        process.exit(1);
-    });
+    } catch (err) {
+        console.error("❌ Database sync failed:", err);
+    }
+})();
