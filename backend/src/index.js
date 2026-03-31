@@ -126,7 +126,7 @@ app.listen(PORT, () => {
 (async () => {
     try {
         console.log("🔄 Syncing database...");
-        await sequelize.sync({ alter: true });
+        await sequelize.sync();
         console.log("✅ Database synced successfully (PostgreSQL)");
     } catch (err) {
         console.error("❌ Database sync failed:", err);
